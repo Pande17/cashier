@@ -1,11 +1,11 @@
 package utils
 
 import (
+	"cashier-machine/model"
+	repository "cashier-machine/repository/config"
+	"cashier-machine/repository/modelfunc"
 	"errors"
 	"fmt"
-	"projek/toko-retail/model"
-	repository "projek/toko-retail/repository/config"
-	"projek/toko-retail/repository/modelfunc"
 	"strconv"
 	"time"
 
@@ -22,7 +22,7 @@ func CreateBarang(data model.Barang) (model.CreateB, error) {
 	// Set timestamps and default CreatedBy if not provided
 	repoBarang.CreatedAt = time.Now() // Set creation time
 	repoBarang.UpdatedAt = time.Now() // Set update time
-	if repoBarang.CreatedBy == "" { // Check if CreatedBy is empty
+	if repoBarang.CreatedBy == "" {   // Check if CreatedBy is empty
 		repoBarang.CreatedBy = "SYSTEM" // Assign default value if empty
 	}
 
@@ -55,7 +55,7 @@ func CreateBarang(data model.Barang) (model.CreateB, error) {
 
 	// Prepare the CreateB response with updated data and history
 	createB := model.CreateB{
-		ID:         repoBarang.ID,        // Assign ID to response
+		ID:         repoBarang.ID,         // Assign ID to response
 		KodeBarang: repoBarang.KodeBarang, // Assign KodeBarang to response
 		Nama:       repoBarang.Nama,       // Assign Nama to response
 		HargaPokok: repoBarang.HargaPokok, // Assign HargaPokok to response
@@ -63,7 +63,7 @@ func CreateBarang(data model.Barang) (model.CreateB, error) {
 		TipeBarang: repoBarang.TipeBarang, // Assign TipeBarang to response
 		Stok:       repoBarang.Stok,       // Assign Stok to response
 		CreatedBy:  repoBarang.CreatedBy,  // Assign CreatedBy to response
-		Histori:    histori,                // Include historical data in response
+		Histori:    histori,               // Include historical data in response
 	}
 
 	return createB, nil // Return the response struct
@@ -71,7 +71,7 @@ func CreateBarang(data model.Barang) (model.CreateB, error) {
 
 // Function to get a list of all items
 func GetBarang() ([]model.Barang, error) {
-	var barang modelfunc.Barang // Initialize repository.Barang
+	var barang modelfunc.Barang               // Initialize repository.Barang
 	return barang.GetAll(repository.Mysql.DB) // Retrieve all item records
 }
 
@@ -94,7 +94,7 @@ func GetBarangByID(id uint64) (*model.Details, error) {
 	if barangModel.ID == 0 && id != 0 { // Check if the ID is not created
 		return nil, fmt.Errorf("ID no: %d not created yet!", id) // Return an error for uncreated ID
 	}
-	
+
 	if barangModel.ID == 0 { // Check if ID is zero
 		return nil, fmt.Errorf("You can't see this! For More Info: https://s.id/why-i-cant-see-id0") // Return an access restriction error
 	}
@@ -111,7 +111,7 @@ func GetBarangByID(id uint64) (*model.Details, error) {
 	}
 
 	details := model.Details{
-		ID:         barangModel.ID,        // Assign ID to response
+		ID:         barangModel.ID,         // Assign ID to response
 		KodeBarang: barangModel.KodeBarang, // Assign KodeBarang to response
 		Nama:       barangModel.Nama,       // Assign Nama to response
 		HargaPokok: barangModel.HargaPokok, // Assign HargaPokok to response
@@ -130,18 +130,18 @@ func GetBarangByID(id uint64) (*model.Details, error) {
 func UpdateBarang(id uint, barang model.Barang) (model.Barang, error) {
 	repoBarang := modelfunc.Barang{
 		Barang: model.Barang{
-			ID:         uint64(id),          // Set ID for update
-			KodeBarang: barang.KodeBarang,   // Set KodeBarang for update
-			Nama:       barang.Nama,         // Set Nama for update
-			HargaPokok: barang.HargaPokok,   // Set HargaPokok for update
-			HargaJual:  barang.HargaJual,    // Set HargaJual for update
-			TipeBarang: barang.TipeBarang,   // Set TipeBarang for update
-			Stok:       barang.Stok,         // Set Stok for update
-			CreatedBy:  barang.CreatedBy,    // Set CreatedBy for update
+			ID:         uint64(id),        // Set ID for update
+			KodeBarang: barang.KodeBarang, // Set KodeBarang for update
+			Nama:       barang.Nama,       // Set Nama for update
+			HargaPokok: barang.HargaPokok, // Set HargaPokok for update
+			HargaJual:  barang.HargaJual,  // Set HargaJual for update
+			TipeBarang: barang.TipeBarang, // Set TipeBarang for update
+			Stok:       barang.Stok,       // Set Stok for update
+			CreatedBy:  barang.CreatedBy,  // Set CreatedBy for update
 		},
 	}
 	err := repoBarang.Update(repository.Mysql.DB) // Update the item record in the database
-	return repoBarang.Barang, err // Return updated item and any errors
+	return repoBarang.Barang, err                 // Return updated item and any errors
 }
 
 // Function to delete an item

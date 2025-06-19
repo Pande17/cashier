@@ -1,9 +1,9 @@
 package controller
 
 import (
+	"cashier-machine/model"
+	"cashier-machine/utils"
 	"fmt"
-	"projek/toko-retail/model"
-	"projek/toko-retail/utils"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -238,7 +238,7 @@ func DeleteKode(c *fiber.Ctx) error {
 func ApplyDiskon(c *fiber.Ctx) error {
 	type DiscountRequest struct {
 		KodeDiskon string  `json:"kode_diskon"` // Discount code
-		Subtotal   float64 `json:"subtotal"`   // Subtotal amount
+		Subtotal   float64 `json:"subtotal"`    // Subtotal amount
 	}
 
 	// Parse the request body into DiscountRequest struct

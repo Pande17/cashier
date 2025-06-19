@@ -1,9 +1,9 @@
 package utils
 
 import (
-	"projek/toko-retail/model"
-	repository "projek/toko-retail/repository/config"
-	"projek/toko-retail/repository/modelfunc"
+	"cashier-machine/model"
+	repository "cashier-machine/repository/config"
+	"cashier-machine/repository/modelfunc"
 
 	"github.com/siruspen/logrus"
 )
@@ -12,10 +12,10 @@ import (
 func CreateHistoriBarang(p *model.Details, keterangan string, amount int, status string) (model.Histori, error) {
 	// Create a new history record
 	histori := model.Histori{
-		ID_barang:   uint(p.ID),        // Set ID_barang from the parameter p
-		Amount:      amount,            // Set amount from the parameter
-		Status:      status,            // Set status from the parameter
-		Keterangan:  keterangan,        // Set description from the parameter
+		ID_barang:  uint(p.ID), // Set ID_barang from the parameter p
+		Amount:     amount,     // Set amount from the parameter
+		Status:     status,     // Set status from the parameter
+		Keterangan: keterangan, // Set description from the parameter
 	}
 
 	// Save the history record to the database
@@ -31,10 +31,10 @@ func CreateHistoriBarang(p *model.Details, keterangan string, amount int, status
 func CreateHistoriPenjualan(p *model.CreateP, keterangan string, amount int, status string) (model.Histori, error) {
 	histori := modelfunc.Histori{
 		Histori: model.Histori{
-			ID_barang:   uint(p.ID),        // Set ID_barang from the parameter p
-			Amount:      amount,            // Set amount from the parameter
-			Status:      status,            // Set status from the parameter
-			Keterangan:  keterangan,        // Set description from the parameter
+			ID_barang:  uint(p.ID), // Set ID_barang from the parameter p
+			Amount:     amount,     // Set amount from the parameter
+			Status:     status,     // Set status from the parameter
+			Keterangan: keterangan, // Set description from the parameter
 		},
 	}
 
@@ -61,13 +61,13 @@ func GetASKMByIDBarang(idb uint64) ([]model.HistoriASKM, error) {
 		return nil, err // Return error if retrieval fails
 	}
 
-	var haskm []model.HistoriASKM // Initialize a slice for the retrieved history records
+	var haskm []model.HistoriASKM  // Initialize a slice for the retrieved history records
 	for _, h := range newHistory { // Iterate through the retrieved history records
 		haskm = append(haskm, model.HistoriASKM{ // Add each history record to the slice
-			Amount:     h.Amount,       // Set Amount from the history record
-			Status:     h.Status,       // Set Status from the history record
-			Keterangan: h.Keterangan,   // Set Description from the history record
-			Model:      h.Model,        // Set Model from the history record
+			Amount:     h.Amount,     // Set Amount from the history record
+			Status:     h.Status,     // Set Status from the history record
+			Keterangan: h.Keterangan, // Set Description from the history record
+			Model:      h.Model,      // Set Model from the history record
 		})
 	}
 
@@ -87,12 +87,12 @@ func GetASK(idb uint64) ([]model.HistoriASK, error) {
 		return nil, err // Return error if retrieval fails
 	}
 
-	var hask []model.HistoriASK // Initialize a slice for the retrieved history records
+	var hask []model.HistoriASK    // Initialize a slice for the retrieved history records
 	for _, h := range newHistory { // Iterate through the retrieved history records
 		hask = append(hask, model.HistoriASK{ // Add each history record to the slice
-			Amount:     h.Amount,       // Set Amount from the history record
-			Status:     h.Status,       // Set Status from the history record
-			Keterangan: h.Keterangan,   // Set Description from the history record
+			Amount:     h.Amount,     // Set Amount from the history record
+			Status:     h.Status,     // Set Status from the history record
+			Keterangan: h.Keterangan, // Set Description from the history record
 		})
 	}
 

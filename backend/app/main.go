@@ -1,8 +1,8 @@
 package main
 
 import (
-	repository "projek/toko-retail/repository/config" // Import the repository package for database configuration
-	"projek/toko-retail/routes"                       // Import the routes package for setting up API routes
+	repository "cashier-machine/repository/config" // Import the repository package for database configuration
+	"cashier-machine/routes"                       // Import the routes package for setting up API routes
 
 	"github.com/gofiber/fiber/v2" // Import Fiber for creating and managing HTTP server
 	"github.com/joho/godotenv"    // Import godotenv for loading environment variables

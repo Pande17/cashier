@@ -1,7 +1,7 @@
 package modelfunc
 
 import (
-	"projek/toko-retail/model" // Import the model package for the Penjualan model
+	"cashier-machine/model" // Import the model package for the Penjualan model
 
 	"gorm.io/gorm" // Import the GORM package for ORM functionality
 )

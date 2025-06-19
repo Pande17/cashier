@@ -1,7 +1,7 @@
 package modelfunc
 
 import (
-	"projek/toko-retail/model" // Import the model package for the Histori model
+	"cashier-machine/model" // Import the model package for the Histori model
 
 	"gorm.io/gorm" // Import the GORM package for ORM functionality
 )

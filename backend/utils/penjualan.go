@@ -1,10 +1,10 @@
 package utils
 
 import (
+	"cashier-machine/model"
+	repository "cashier-machine/repository/config"
+	"cashier-machine/repository/modelfunc"
 	"fmt"
-	"projek/toko-retail/model"
-	repository "projek/toko-retail/repository/config"
-	"projek/toko-retail/repository/modelfunc"
 	"time"
 )
 

@@ -1,9 +1,9 @@
 package repository
 
 import (
+	"cashier-machine/model"
 	"fmt"
 	"os"
-	"projek/toko-retail/model"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

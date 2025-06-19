@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"projek/toko-retail/model"
-	"projek/toko-retail/utils"
+	"cashier-machine/model"
+	"cashier-machine/utils"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"

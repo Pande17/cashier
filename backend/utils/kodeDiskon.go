@@ -1,9 +1,9 @@
 package utils
 
 import (
-	"projek/toko-retail/model"
-	repository "projek/toko-retail/repository/config"
-	"projek/toko-retail/repository/modelfunc"
+	"cashier-machine/model"
+	repository "cashier-machine/repository/config"
+	"cashier-machine/repository/modelfunc"
 	"time"
 
 	"github.com/siruspen/logrus"

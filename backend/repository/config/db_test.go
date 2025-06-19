@@ -1,11 +1,11 @@
 package repository_test
 
 import (
+	repository "cashier-machine/repository/config"
 	"fmt"
 	"testing"
 
 	"github.com/joho/godotenv"
-	"projek/toko-retail/repository/config"
 )
 
 // Init loads environment variables from a .env file for testing
@@ -18,7 +18,7 @@ func Init() {
 
 // TestKoneksi tests the database connection
 func TestKoneksi(t *testing.T) {
-	Init()  // Load environment variables
+	Init() // Load environment variables
 
 	db, err := repository.OpenDB()
 	if err != nil {

@@ -1,30 +1,30 @@
 package controller
 
 import (
-	"projek/toko-retail/model"
-	"projek/toko-retail/utils"
+	"cashier-machine/model"
+	"cashier-machine/utils"
 	"strconv"
 
-	"github.com/gofiber/fiber/v2"   // Import Fiber for handling HTTP requests and responses
-	"github.com/sirupsen/logrus"   // Import logrus for logging
+	"github.com/gofiber/fiber/v2" // Import Fiber for handling HTTP requests and responses
+	"github.com/sirupsen/logrus"  // Import logrus for logging
 )
 
 // Function to create a new Barang (item)
 func CreateBarang(c *fiber.Ctx) error {
 	// Define a request struct for adding new Barang
 	type AddBarangReq struct {
-		Kode       string  `json:"kode_barang"`   // Barang code
-		Nama       string  `json:"nama_barang"`   // Barang name
-		HargaPokok float64 `json:"harga_pokok"`   // Cost price
-		HargaJual  float64 `json:"harga_jual"`    // Selling price
-		Tipe       string  `json:"tipe_barang"`   // Barang type
-		Stok       uint    `json:"stok"`          // Stock quantity
-		CreateBy   string  `json:"created_by"`    // Creator's name
+		Kode       string  `json:"kode_barang"` // Barang code
+		Nama       string  `json:"nama_barang"` // Barang name
+		HargaPokok float64 `json:"harga_pokok"` // Cost price
+		HargaJual  float64 `json:"harga_jual"`  // Selling price
+		Tipe       string  `json:"tipe_barang"` // Barang type
+		Stok       uint    `json:"stok"`        // Stock quantity
+		CreateBy   string  `json:"created_by"`  // Creator's name
 		Histori    struct {
-			Amount     int    `json:"amount"`      // Stock change amount
-			Status     string `json:"status"`      // Stock change status
-			Keterangan string `json:"keterangan"`  // Description of the stock change
-		} `json:"histori_stok"`  // Stock history information
+			Amount     int    `json:"amount"`     // Stock change amount
+			Status     string `json:"status"`     // Stock change status
+			Keterangan string `json:"keterangan"` // Description of the stock change
+		} `json:"histori_stok"` // Stock history information
 	}
 
 	// Parse the request body JSON into the AddBarangReq struct
@@ -33,7 +33,7 @@ func CreateBarang(c *fiber.Ctx) error {
 		// Handle JSON parsing errors
 		return c.Status(fiber.StatusBadRequest).
 			JSON(map[string]any{
-				"message": "Invalid Body",  // Response message for invalid body
+				"message": "Invalid Body", // Response message for invalid body
 			})
 	}
 
@@ -66,7 +66,7 @@ func CreateBarang(c *fiber.Ctx) error {
 		logrus.Printf("Error occurred: %s\n", errCreateBarang.Error())
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(map[string]any{
-				"message": "Server Error",  // Response message for server error
+				"message": "Server Error", // Response message for server error
 			})
 	}
 
@@ -87,7 +87,7 @@ func GetBarang(c *fiber.Ctx) error {
 		logrus.Error("Failed to retrieve Barang list: ", err.Error())
 		return c.Status(fiber.StatusInternalServerError).JSON(
 			map[string]any{
-				"message": "Server Error",  // Response message for server error
+				"message": "Server Error", // Response message for server error
 			},
 		)
 	}
@@ -96,7 +96,7 @@ func GetBarang(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(
 		map[string]any{
 			"data":    dataBarang,
-			"message": "Success Get All Barang",  // Success message
+			"message": "Success Get All Barang", // Success message
 		},
 	)
 }
@@ -109,7 +109,7 @@ func GetBarangByID(c *fiber.Ctx) error {
 		// Handle invalid ID format
 		return c.Status(fiber.StatusBadRequest).JSON(
 			map[string]interface{}{
-				"message": "Invalid ID",  // Response message for invalid ID
+				"message": "Invalid ID", // Response message for invalid ID
 			},
 		)
 	}
@@ -121,7 +121,7 @@ func GetBarangByID(c *fiber.Ctx) error {
 		if err.Error() == "record not found" {
 			return c.Status(fiber.StatusNotFound).JSON(
 				map[string]interface{}{
-					"message": "ID not found",  // Response message for ID not found
+					"message": "ID not found", // Response message for ID not found
 				},
 			)
 		}
@@ -129,7 +129,7 @@ func GetBarangByID(c *fiber.Ctx) error {
 		// Handle other errors
 		return c.Status(fiber.StatusInternalServerError).JSON(
 			map[string]interface{}{
-				"message": err.Error(),  // Response message with error details
+				"message": err.Error(), // Response message with error details
 			},
 		)
 	}
@@ -138,7 +138,7 @@ func GetBarangByID(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(
 		map[string]interface{}{
 			"data":    dataBarang,
-			"message": "Success",  // Success message
+			"message": "Success", // Success message
 		},
 	)
 }
@@ -150,7 +150,7 @@ func UpdateBarang(c *fiber.Ctx) error {
 	if err != nil {
 		// Handle invalid ID format
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "Invalid ID",  // Response message for invalid ID
+			"message": "Invalid ID", // Response message for invalid ID
 		})
 	}
 
@@ -159,7 +159,7 @@ func UpdateBarang(c *fiber.Ctx) error {
 	if err := c.BodyParser(&updatedBarang); err != nil {
 		// Handle JSON parsing errors
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "Invalid request body",  // Response message for invalid body
+			"message": "Invalid request body", // Response message for invalid body
 		})
 	}
 
@@ -168,7 +168,7 @@ func UpdateBarang(c *fiber.Ctx) error {
 	if err != nil {
 		// Handle errors during update
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Failed to update item",  // Response message for update failure
+			"message": "Failed to update item", // Response message for update failure
 		})
 	}
 
@@ -187,7 +187,7 @@ func UpdateStok(c *fiber.Ctx) error {
 	if err != nil {
 		// Handle invalid ID format
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "Invalid ID",  // Response message for invalid ID
+			"message": "Invalid ID", // Response message for invalid ID
 		})
 	}
 
@@ -201,7 +201,7 @@ func UpdateStok(c *fiber.Ctx) error {
 	if err := c.BodyParser(&requestData); err != nil {
 		// Handle JSON parsing errors
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "Invalid request body",  // Response message for invalid body
+			"message": "Invalid request body", // Response message for invalid body
 		})
 	}
 
@@ -210,7 +210,7 @@ func UpdateStok(c *fiber.Ctx) error {
 	if err != nil {
 		// Handle errors during retrieval
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Failed to retrieve item",  // Response message for retrieval failure
+			"message": "Failed to retrieve item", // Response message for retrieval failure
 		})
 	}
 
@@ -231,7 +231,7 @@ func UpdateStok(c *fiber.Ctx) error {
 	if err != nil {
 		// Handle errors during update
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Failed to update item",  // Response message for update failure
+			"message": "Failed to update item", // Response message for update failure
 		})
 	}
 
@@ -240,7 +240,7 @@ func UpdateStok(c *fiber.Ctx) error {
 	if err != nil {
 		// Handle errors during history creation
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Failed to create history record",  // Response message for history creation failure
+			"message": "Failed to create history record", // Response message for history creation failure
 		})
 	}
 
@@ -265,7 +265,7 @@ func DeleteBarang(c *fiber.Ctx) error {
 		// Handle invalid ID format
 		return c.Status(fiber.StatusBadRequest).JSON(
 			map[string]any{
-				"message": "Invalid ID",  // Response message for invalid ID
+				"message": "Invalid ID", // Response message for invalid ID
 			},
 		)
 	}
@@ -277,7 +277,7 @@ func DeleteBarang(c *fiber.Ctx) error {
 		if err.Error() == "record not found" {
 			return c.Status(fiber.StatusNotFound).JSON(
 				map[string]any{
-					"message": "ID not found",  // Response message for ID not found
+					"message": "ID not found", // Response message for ID not found
 				},
 			)
 		}
@@ -285,6 +285,6 @@ func DeleteBarang(c *fiber.Ctx) error {
 
 	// Return confirmation of successful deletion
 	return c.Status(fiber.StatusOK).JSON(map[string]any{
-		"message": "Deleted Successfully",  // Response message for successful deletion
+		"message": "Deleted Successfully", // Response message for successful deletion
 	})
 }
