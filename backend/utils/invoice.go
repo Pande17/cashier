@@ -97,18 +97,18 @@ func GetInvoices() ([]model.Invoice, error) {
 
 	// Convert []modelfunc.Invoice to []model.Invoice
 	result := make([]model.Invoice, len(invoiceList)) // Initialize a result slice
-	for i, pj := range invoiceList {                  // Iterate through the retrieved sales records
-		result[i] = pj.Invoice // Add each record to the result slice
+	for i, inv := range invoiceList {                 // Iterate through the retrieved sales records
+		result[i] = inv.Invoice // Add each record to the result slice
 	}
 
 	return result, nil // Return the slice of sales records
 }
 
 // Function to get sales data by ID
-func GetInvoiceByID(id uint64) (model.Invoice, error) {
+func GetInvoiceByID(kode string) (model.Invoice, error) {
 	invoice := modelfunc.Invoice{
 		Invoice: model.Invoice{
-			KodeInvoice: id, // Set the ID from the parameter
+			KodeInvoice: kode, // Set the ID from the parameter
 		},
 	}
 	result, err := invoice.GetPByID(repository.Mysql.DB) // Retrieve the sales record by ID

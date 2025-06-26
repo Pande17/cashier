@@ -12,16 +12,16 @@ type Invoice struct {
 }
 
 // CreateInvoice inserts a new Invoice record into the database
-func (pj *Invoice) CreateInvoice(db *gorm.DB) error {
-	err := db.Create(&pj).Error // Attempt to create a new Invoice record
-	if err != nil {             // Check if there was an error
+func (inv *Invoice) CreateInvoice(db *gorm.DB) error {
+	err := db.Create(&inv).Error // Attempt to create a new Invoice record
+	if err != nil {              // Check if there was an error
 		return err // Return the error if creation fails
 	}
 	return nil // Return nil if creation is successful
 }
 
 // GetAll retrieves all Invoice records from the database
-func (pj *Invoice) GetAll(db *gorm.DB) ([]Invoice, error) {
+func (inv *Invoice) GetAll(db *gorm.DB) ([]Invoice, error) {
 	res := []Invoice{}                          // Initialize an empty slice of Invoice
 	err := db.Model(Invoice{}).Find(&res).Error // Query all Invoice records and store them in res
 	if err != nil {                             // Check if there was an error
@@ -31,28 +31,28 @@ func (pj *Invoice) GetAll(db *gorm.DB) ([]Invoice, error) {
 }
 
 // GetPByID retrieves a single Invoice record by its ID
-func (pj *Invoice) GetPByID(db *gorm.DB) (Invoice, error) {
-	res := Invoice{}                                                            // Initialize an empty Invoice
-	err := db.Model(Invoice{}).Where("id = ?", pj.KodeInvoice).Take(&res).Error // Query for a Invoice record with the given ID
-	if err != nil {                                                             // Check if there was an error
+func (inv *Invoice) GetPByID(db *gorm.DB) (Invoice, error) {
+	res := Invoice{}                                                             // Initialize an empty Invoice
+	err := db.Model(Invoice{}).Where("id = ?", inv.KodeInvoice).Take(&res).Error // Query for a Invoice record with the given ID
+	if err != nil {                                                              // Check if there was an error
 		return Invoice{}, err // Return an empty Invoice and the error
 	}
 	return res, nil // Return the retrieved Invoice and nil (no error)
 }
 
 // Update modifies an existing Invoice record in the database
-func (pj *Invoice) Update(db *gorm.DB) error {
-	err := db.Model(Invoice{}).Where("id = ?", pj.KodeInvoice).Updates(&pj).Error // Update the Invoice record with the given ID
-	if err != nil {                                                               // Check if there was an error
+func (inv *Invoice) Update(db *gorm.DB) error {
+	err := db.Model(Invoice{}).Where("id = ?", inv.KodeInvoice).Updates(&inv).Error // Update the Invoice record with the given ID
+	if err != nil {                                                                 // Check if there was an error
 		return err // Return the error if the update fails
 	}
 	return nil // Return nil if the update is successful
 }
 
 // UpdateKodeInvoice updates the invoice code of an existing Invoice record
-func (pj *Invoice) UpdateKodeInvoice(db *gorm.DB) error {
-	err := db.Model(Invoice{}).Where("id = ?", pj.KodeInvoice).Updates(&pj).Error // Update the Invoice record with the given ID (specifically for invoice code)
-	if err != nil {                                                               // Check if there was an error
+func (inv *Invoice) UpdateKodeInvoice(db *gorm.DB) error {
+	err := db.Model(Invoice{}).Where("id = ?", inv.KodeInvoice).Updates(&inv).Error // Update the Invoice record with the given ID (specifically for invoice code)
+	if err != nil {                                                                 // Check if there was an error
 		return err // Return the error if the update fails
 	}
 	return nil // Return nil if the update is successful

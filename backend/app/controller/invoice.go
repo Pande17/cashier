@@ -107,7 +107,7 @@ func GetInvoiceByID(c *fiber.Ctx) error {
 	}
 
 	// Retrieve the sale data by its ID
-	dataInvoice, err := utils.GetInvoiceByID(uint64(invoiceID))
+	dataInvoice, err := utils.GetInvoiceByID(string(invoiceID))
 	if err != nil {
 		if err.Error() == "record not found" {
 			// Return a Not Found response if no record is found with the given ID
