@@ -28,7 +28,7 @@ func CreateHistoriBarang(p *model.Details, keterangan string, amount int, status
 }
 
 // Function to create a new sales history record
-func CreateHistoriPenjualan(p *model.CreateP, keterangan string, amount int, status string) (model.Histori, error) {
+func CreateHistoriInvoice(p *model.CreateP, keterangan string, amount int, status string) (model.Histori, error) {
 	histori := modelfunc.Histori{
 		Histori: model.Histori{
 			ID_barang:  uint(p.ID), // Set ID_barang from the parameter p

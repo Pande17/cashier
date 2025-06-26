@@ -6,16 +6,36 @@ import (
 	"cashier-machine/repository/modelfunc"
 	"fmt"
 	"time"
+
+	"gorm.io/gorm"
 )
 
-// Function to generate an invoice code automatically
-func GenerateKodeInvoice(id uint64) string {
-	kodeInvoice := fmt.Sprintf("INV%d", id) // Format the invoice code with the given ID
-	return kodeInvoice
+// Fungsi untuk menghasilkan kode invoice
+func GenerateKodeInvoice(db *gorm.DB) (string, error) {
+	// Mendapatkan tanggal hari ini dalam format YYYYMMDD
+	today := time.Now().Format("20060102")
+
+	// Mencari jumlah invoice yang sudah ada untuk hari ini
+	var count int64
+	err := db.Model(&model.Invoice{}).Where("DATE(tanggal_beli) = ?", time.Now().Format("2006-01-02")).Count(&count).Error
+	if err != nil {
+		return "", err
+	}
+
+	// Increment ID berdasarkan jumlah invoice yang ada + 1
+	idIncrement := count + 1
+
+	// Format ID increment dengan 4 digit (0001, 0002, dst)
+	idString := fmt.Sprintf("%04d", idIncrement)
+
+	// Membuat kode invoice
+	kodeInvoice := fmt.Sprintf("INV%s%s", today, idString)
+
+	return kodeInvoice, nil
 }
 
 // Function to insert sales data into the database
-func InsertPenjualanData(data model.Invoice) (model.Invoice, error) {
+func InsertInvoiceData(data model.Invoice) (model.Invoice, error) {
 	data.Model.CreatedAt = time.Now() // Set the creation timestamp
 	data.Model.UpdatedAt = time.Now() // Set the update timestamp
 
@@ -42,58 +62,58 @@ func InsertPenjualanData(data model.Invoice) (model.Invoice, error) {
 		data.Total = data.Subtotal
 	}
 
-	// Convert model.Penjualan to modelfunc.Penjualan
-	penjualan := modelfunc.Penjualan{
-		Penjualan: data, // Initialize with the provided sales data
+	// Convert model.Invoice to modelfunc.Invoice
+	invoice := modelfunc.Invoice{
+		Invoice: data, // Initialize with the provided sales data
 	}
 
 	// Save the sales data to the database to get the generated ID
-	err := penjualan.CreatePenjualan(repository.Mysql.DB)
+	err := invoice.CreateInvoice(repository.Mysql.DB)
 	if err != nil {
 		return data, err // Return the error if saving fails
 	}
 
 	// Generate the invoice code after saving the sales data
-	data.ID = penjualan.Penjualan.ID
+	data.ID = invoice.Invoice.ID
 	data.Kode_invoice = GenerateInvoice(data.ID)
 
 	// Update the sales data with the newly generated invoice code
-	penjualan.Penjualan.Kode_invoice = data.Kode_invoice
-	err = penjualan.Update(repository.Mysql.DB)
+	invoice.Invoice.Kode_invoice = data.Kode_invoice
+	err = invoice.Update(repository.Mysql.DB)
 	if err != nil {
 		return data, err // Return the error if updating fails
 	}
 
-	return penjualan.Penjualan, nil // Return the updated sales record
+	return invoice.Invoice, nil // Return the updated sales record
 }
 
 // Function to get all sales data
 func GetInvoices() ([]model.Invoice, error) {
-	var penjualan modelfunc.Penjualan
-	penjualanList, err := penjualan.GetAll(repository.Mysql.DB) // Retrieve all sales records
+	var invoice modelfunc.Invoice
+	invoiceList, err := invoice.GetAll(repository.Mysql.DB) // Retrieve all sales records
 	if err != nil {
 		return nil, err // Return the error if retrieval fails
 	}
 
-	// Convert []modelfunc.Penjualan to []model.Penjualan
-	result := make([]model.Penjualan, len(penjualanList)) // Initialize a result slice
-	for i, pj := range penjualanList {                    // Iterate through the retrieved sales records
-		result[i] = pj.Penjualan // Add each record to the result slice
+	// Convert []modelfunc.Invoice to []model.Invoice
+	result := make([]model.Invoice, len(invoiceList)) // Initialize a result slice
+	for i, pj := range invoiceList {                  // Iterate through the retrieved sales records
+		result[i] = pj.Invoice // Add each record to the result slice
 	}
 
 	return result, nil // Return the slice of sales records
 }
 
 // Function to get sales data by ID
-func GetPenjualanByID(id uint64) (model.Penjualan, error) {
-	penjualan := modelfunc.Penjualan{
-		Penjualan: model.Penjualan{
-			ID: id, // Set the ID from the parameter
+func GetInvoiceByID(id uint64) (model.Invoice, error) {
+	invoice := modelfunc.Invoice{
+		Invoice: model.Invoice{
+			KodeInvoice: id, // Set the ID from the parameter
 		},
 	}
-	result, err := penjualan.GetPByID(repository.Mysql.DB) // Retrieve the sales record by ID
+	result, err := invoice.GetPByID(repository.Mysql.DB) // Retrieve the sales record by ID
 	if err != nil {
-		return model.Penjualan{}, err // Return the error if retrieval fails
+		return model.Invoice{}, err // Return the error if retrieval fails
 	}
-	return result.Penjualan, nil // Return the retrieved sales record
+	return result.Invoice, nil // Return the retrieved sales record
 }

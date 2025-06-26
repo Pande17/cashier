@@ -8,7 +8,7 @@ type Barang struct {
 	HargaJual  float64 `json:"harga_jual"`                    // Selling price of the product
 	HargaBeli  float64 `json:"harga_beli"`                    // Cost price of the product
 	Stok       uint    `json:"stok"`                          // Stock quantity of the product
-	Model              // Embeds common fields like CreatedAt, UpdatedAt, etc.
+	Model      Model        // Embeds common fields like CreatedAt, UpdatedAt, etc.
 }
 
 // Details provides a detailed view of a product, including its history

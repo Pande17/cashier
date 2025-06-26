@@ -52,10 +52,10 @@ func OpenDB() (*gorm.DB, error) {
 // autoMigrate migrates the database schema to match the model definitions
 func autoMigrate(db *gorm.DB) error {
 	return db.AutoMigrate(
-		&model.Model{},
+		&model.Admin{},
 		&model.Barang{},
-		&model.Penjualan{},
-		&model.Diskon{},
-		&model.Histori{},
+		&model.Invoice{},
+		&model.Member{},
+		&model.InvoiceItem{},
 	)
 }

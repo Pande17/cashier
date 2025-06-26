@@ -9,27 +9,25 @@ import (
 	logrus "github.com/sirupsen/logrus"
 )
 
-// InsertPenjualanData handles the insertion of new 'data penjualan' into the system
-func InsertPenjualanData(c *fiber.Ctx) error {
+// InsertInvoiceData handles the insertion of new 'data invoice' into the system
+func InsertInvoiceData(c *fiber.Ctx) error {
 	// Define the structure for the request body
-	type AddPenjualanReq struct {
-		ID            uint64  `json:"id"`           // Unique identifier for the sale
-		KodeInvoice   string  `json:"kode_invoice"` // Invoice code
-		NamaPembeli   string  `json:"nama_pembeli"` // Name of the buyer
-		Subtotal      float64 `json:"subtotal"`     // Subtotal amount
-		KodeDiskon    string  `json:"kode_diskon"`  // Discount code applied
-		Diskon        float64 `json:"diskon"`       // Discount amount
-		Total         float64 `json:"total"`        // Total amount after discount
-		CreatedBy     string  `json:"created_by"`   // Person who created the sale entry
-		ItemPenjualan []struct {
+	type AddInvoiceReq struct {
+		MemberID    string  `json:"member_id"`   // ID of the buyer
+		Subtotal    float64 `json:"subtotal"`    // Subtotal amount
+		KodeDiskon  string  `json:"kode_diskon"` // Discount code applied
+		Diskon      float64 `json:"diskon"`      // Discount amount
+		Total       float64 `json:"total"`       // Total amount after discount
+		CreatedBy   string  `json:"created_by"`  // Person who created the sale entry
+		ItemInvoice []struct {
 			Kode   string `json:"kode_barang"` // Item code
 			Jumlah uint   `json:"jumlah"`      // Quantity of the item sold
-		} `json:"item_penjualan"` // List of items sold
+		} `json:"item_invoice"` // List of items sold
 	}
 
-	req := new(AddPenjualanReq)
+	req := new(AddInvoiceReq)
 
-	// Parse the incoming JSON body into the AddPenjualanReq struct
+	// Parse the incoming JSON body into the AddInvoiceReq struct
 	if err := c.BodyParser(req); err != nil {
 		// Return a Bad Request response if the body parsing fails
 		return c.Status(fiber.StatusBadRequest).
@@ -38,22 +36,30 @@ func InsertPenjualanData(c *fiber.Ctx) error {
 			})
 	}
 
-	// Create a Penjualan model instance with the parsed data
-	penjualan := model.Invoice{
-		ID:           req.ID,
-		Kode_invoice: req.KodeInvoice,
-		Nama_pembeli: req.NamaPembeli,
-		Subtotal:     req.Subtotal,
-		Kode_diskon:  req.KodeDiskon,
-		Diskon:       req.Diskon,
-		Total:        req.Total,
+	// Create a Invoice model instance with the parsed data
+	invoice := model.Invoice{
+		KodeInvoice:     req.KodeInvoice,
+		MemberID:        req.MemberID,
+		TanggalBeli:     req.NamaPembeli,
+		JatuhTempo:      req.Subtotal,
+		Ppn:             req.KodeDiskon,
+		BiayaPengiriman: req.Diskon,
+		Subtotal:        req.Total,
+		DiskonTotal:     req.Diskon,
+		Diskon:          req.Diskon,
+		Total:           req.Total,
+		Model: model.Model{
+			CreatedBy: req.CreatedBy,          // Set the creator of the sale entry
+			CreatedAt: utils.GetCurrentTime(), // Set the creation time
+			UpdatedAt: utils.GetCurrentTime(), // Set the update time
+		},
 	}
 
 	// Insert the sale data into the database
-	_, errInsertPenjualan := utils.InsertPenjualanData(penjualan)
-	if errInsertPenjualan != nil {
+	_, errInsertInvoice := utils.InsertInvoiceData(invoice)
+	if errInsertInvoice != nil {
 		// Log the error and return an Internal Server Error response if insertion fails
-		logrus.Printf("Terjadi error : %s\n", errInsertPenjualan.Error())
+		logrus.Printf("Terjadi error : %s\n", errInsertInvoice.Error())
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(map[string]any{
 				"message": "Server Error", // Error message for server error
@@ -63,7 +69,7 @@ func InsertPenjualanData(c *fiber.Ctx) error {
 	// Return a successful response if insertion succeeds
 	return c.Status(fiber.StatusOK).
 		JSON(map[string]any{
-			"message": "Berhasil Menambahkan Penjualan", // Success message
+			"message": "Berhasil Menambahkan Invoice", // Success message
 		})
 }
 
@@ -73,33 +79,24 @@ func GetInvoices(c *fiber.Ctx) error {
 	dataInvoices, err := utils.GetInvoices()
 	if err != nil {
 		// Log the error and return an Internal Server Error response if retrieval fails
-		logrus.Error("Gagal dalam mengambil list penjualan :", err.Error())
-		return c.Status(fiber.StatusInternalServerError).JSON(
-			map[string]any{
-				"message": "Server Error", // Error message for server error
-			},
-		)
+		logrus.Error("Gagal dalam mengambil list invoice :", err.Error())
+		return Conflict(c, "Server Error", "Gagal mengambil data invoice")
 	}
 
 	if dataInvoices != nil {
 		// Log the retrieved data and its length
-		logrus.Info("Data Penjualan yang diterima: ", dataInvoices)
-		logrus.Info("Jumlah item dalam data penjualan: ", len(dataInvoices))
+		logrus.Info("Data Invoice yang diterima: ", dataInvoices)
+		logrus.Info("Jumlah item dalam data invoice: ", len(dataInvoices))
 	}
 
 	// Return the retrieved sales data with a success message
-	return c.Status(fiber.StatusOK).JSON(
-		map[string]any{
-			"penjualan": dataInvoices,               // Sales data
-			"message":   "Success Get All Penjualan", // Success message
-		},
-	)
+	return OK(c, "Berhasil mengambil data invoice", dataInvoices)
 }
 
-// GetPenjualanByID retrieves a specific 'penjualan data' by its ID
-func GetPenjualanByID(c *fiber.Ctx) error {
+// GetInvoiceByID retrieves a specific 'invoice data' by its ID
+func GetInvoiceByID(c *fiber.Ctx) error {
 	// Extract and convert the sale ID from the request parameters
-	penjualanID, err := strconv.Atoi(c.Params("id"))
+	invoiceID, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		// Return a Bad Request response if ID conversion fails
 		return c.Status(fiber.StatusBadRequest).JSON(
@@ -110,7 +107,7 @@ func GetPenjualanByID(c *fiber.Ctx) error {
 	}
 
 	// Retrieve the sale data by its ID
-	dataPenjualan, err := utils.GetPenjualanByID(uint64(penjualanID))
+	dataInvoice, err := utils.GetInvoiceByID(uint64(invoiceID))
 	if err != nil {
 		if err.Error() == "record not found" {
 			// Return a Not Found response if no record is found with the given ID
@@ -132,8 +129,8 @@ func GetPenjualanByID(c *fiber.Ctx) error {
 	// Return the specific sale's data with a success message
 	return c.Status(fiber.StatusOK).JSON(
 		map[string]interface{}{
-			"data":    dataPenjualan, // Sale data
-			"message": "Success",     // Success message
+			"data":    dataInvoice, // Sale data
+			"message": "Success",   // Success message
 		},
 	)
 }

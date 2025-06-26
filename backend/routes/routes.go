@@ -13,6 +13,14 @@ func RouteSetup(r *fiber.App) {
 	// Define a route group for organizing the routes
 	cashierGroup := r.Group("")
 
+	// Middleware to handle CORS for the cashier routes
+	// This middleware allows cross-origin requests to the cashier routes
+	// cashierGroup.Use(cors.New(cors.Config{
+	// 	AllowOrigins: "*", // Bisa disesuaikan dengan domain yang ingin diizinkan
+	// 	AllowMethods: "GET,POST,DELETE,PUT",
+	// 	AllowHeaders: "Origin, Content-Type, Accept",
+	// }))
+
 	// Define routes for 'Barang'
 	cashierGroup.Get("/barang", controller.GetBarang)           // Route to get all Barang data
 	cashierGroup.Get("/barang/:id", controller.GetBarangByID)   // Route to get a specific Barang by ID
@@ -22,9 +30,9 @@ func RouteSetup(r *fiber.App) {
 	cashierGroup.Delete("/barang/:id", controller.DeleteBarang) // Route to delete a Barang by ID
 
 	// Define routes for 'invoice'
-	cashierGroup.Get("/invoice", controller.GetPenjualan)         // Route to get all Penjualan data
-	cashierGroup.Get("/invoice/:id", controller.GetPenjualanByID) // Route to get a specific Penjualan by ID
-	cashierGroup.Post("/invoice", controller.InsertPenjualanData) // Route to create a new Penjualan record
+	cashierGroup.Get("/invoice", controller.GetInvoices)        // Route to get all Invoice data
+	cashierGroup.Get("/invoice/:id", controller.GetInvoiceByID) // Route to get a specific Invoice by ID
+	cashierGroup.Post("/invoice", controller.InsertInvoiceData) // Route to create a new Invoice record
 
 	// Define routes for 'Kode Diskon'
 	cashierGroup.Get("/kode-diskon", controller.GetKodeDiskon)         // Route to get all Kode Diskon data
