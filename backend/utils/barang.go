@@ -119,7 +119,7 @@ func GetBarangByID(id uint64) (*model.Details, error) {
 		TipeBarang: barangModel.TipeBarang, // Assign TipeBarang to response
 		Stok:       barangModel.Stok,       // Assign Stok to response
 		Model:      barangModel.Model,      // Assign Model to response
-		CreatedBy:  barangModel.CreatedBy,  // Assign CreatedBy to response
+		// CreatedBy:  barangModel.CreatedBy,  // Assign CreatedBy to response
 		Histori:    histori,                // Include historical data in response
 	}
 

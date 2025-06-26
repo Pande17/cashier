@@ -10,7 +10,7 @@ import (
 
 // Init loads environment variables from a .env file for testing
 func Init() {
-	err := godotenv.Load("../.env")
+	err := godotenv.Load("../../.env")
 	if err != nil {
 		fmt.Println("env not found, using system env")
 	}
