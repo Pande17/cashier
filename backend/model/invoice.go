@@ -17,7 +17,7 @@ type Invoice struct {
 	Diskon          float64       `json:"diskon"`                         // Discount amount applied
 	Total           float64       `json:"total"`                          // Final total amount after discount
 	InvoiceItem     []InvoiceItem `json:"invoice_item"`                   // List of items involved in the transaction
-	Model           Model              // Embeds common fields like CreatedAt, UpdatedAt, etc.
+	Model           Model         // Embeds common fields like CreatedAt, UpdatedAt, etc.
 }
 
 // // CreateInv represents the data structure used for creating a new sales transaction

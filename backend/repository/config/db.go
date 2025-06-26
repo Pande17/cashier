@@ -1,10 +1,12 @@
 package repository
 
 import (
-	"cashier-machine/model"
 	"fmt"
 	"os"
 
+	"cashier-machine/model" // Import model yang sesuai dengan struktur model di aplikasi Anda
+
+	"github.com/sirupsen/logrus"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -29,7 +31,8 @@ func OpenDB() (*gorm.DB, error) {
 	connString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
 		dbUser, dbPass, dbHost, dbPort, dbName)
 
-	fmt.Println("Connection String:", connString)
+	// Log the connection string (don't expose password in production)
+	logrus.Info("Connection String:", connString)
 
 	// Open MySQL connection
 	mysqlConn, err := gorm.Open(mysql.Open(connString), &gorm.Config{})
@@ -41,21 +44,23 @@ func OpenDB() (*gorm.DB, error) {
 		DB: mysqlConn,
 	}
 
-	// Perform migrations
-	if err := autoMigrate(mysqlConn); err != nil {
+	// Perform the migrations for the tables (if needed)
+	err = autoMigrate(mysqlConn)
+	if err != nil {
 		return nil, fmt.Errorf("failed to migrate database: %w", err)
 	}
 
 	return mysqlConn, nil
 }
 
-// autoMigrate migrates the database schema to match the model definitions
+// autoMigrate ensures that the table schema in the database matches the model definitions
 func autoMigrate(db *gorm.DB) error {
+	// Explicitly define the table names for each model
 	return db.AutoMigrate(
-		&model.Admin{},
-		&model.Barang{},
-		&model.Invoice{},
-		&model.Member{},
-		&model.InvoiceItem{},
+		&model.Admin{},       // Ensure admin table exists
+		&model.Barang{},      // Ensure barang table exists
+		&model.Invoice{},     // Ensure invoice table exists
+		&model.Member{},      // Ensure member table exists
+		&model.InvoiceItem{}, // Ensure invoice_item table exists
 	)
 }

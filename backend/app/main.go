@@ -11,8 +11,8 @@ import (
 
 // InitEnv initializes environment variables from a .env file
 func InitEnv() {
-	err := godotenv.Load("../.env") // Load environment variables from the .env file
-	if err != nil {                 // Check if there was an error loading the .env file
+	err := godotenv.Load(".env") // Load environment variables from the .env file
+	if err != nil {              // Check if there was an error loading the .env file
 		logrus.Warn("Cannot load env file, using system env") // Log a warning if the .env file could not be loaded
 	}
 }

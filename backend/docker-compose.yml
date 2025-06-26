@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+    backend:
+        build:
+            context: .
+            dockerfile: ./Dockerfile # Tentukan Dockerfile untuk membangun backend
+        environment:
+            - DB_USER=root
+            - DB_PASS=""
+            - DB_HOST=mysql
+            - DB_PORT=3306
+            - DB_NAME=machine-cashier
+        ports:
+            - '3000:3000' # Mengarahkan port 3000 dari container ke port 3000 di host
+        depends_on:
+            - mysql # Pastikan mysql dijalankan sebelum backend
+        volumes:
+            - .:/app # Menghubungkan direktori backend dengan container
+        networks:
+            - app-network
+
+    mysql:
+        image: mysql:8.0 # Menggunakan image resmi MySQL versi 8.0
+        environment:
+            MYSQL_ROOT_PASSWORD: ""
+            MYSQL_DATABASE: machine-cashier
+        ports:
+            - '3306:3306' # Mengarahkan port MySQL dari container ke port 3306 di host
+        volumes:
+            - mysql-data:/var/lib/mysql # Menggunakan volume agar data MySQL persistent
+        networks:
+            - app-network
+
+networks:
+    app-network:
+        driver: bridge # Menggunakan jaringan bridge agar kedua container bisa berkomunikasi
+
+volumes:
+    mysql-data:
+        driver: local # Volume untuk data MySQL
