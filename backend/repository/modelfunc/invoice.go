@@ -22,9 +22,9 @@ func (inv *Invoice) CreateInvoice(db *gorm.DB) error {
 
 // GetAll retrieves all Invoice records from the database
 func (inv *Invoice) GetAll(db *gorm.DB) ([]Invoice, error) {
-	res := []Invoice{}                          // Initialize an empty slice of Invoice
-	err := db.Model(Invoice{}).Find(&res).Error // Query all Invoice records and store them in res
-	if err != nil {                             // Check if there was an error
+	res := []Invoice{}                                 // Initialize an empty slice of Invoice
+	err := db.Preload("InvoiceItems").Find(&res).Error // Query all Invoice records and store them in res
+	if err != nil {                                    // Check if there was an error
 		return []Invoice{}, err // Return an empty slice and the error
 	}
 	return res, nil // Return the retrieved records and nil (no error)

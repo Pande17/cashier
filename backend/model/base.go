@@ -8,7 +8,7 @@ import (
 
 // Model is a base struct that includes common timestamp fields for database records
 type Model struct {
-	CreatedBy time.Time      `json:"created_by"`              // Name of the user who created the record
+	CreatedBy string         `json:"created_by"`              // Name of the user who created the record
 	CreatedAt time.Time      `json:"created_at"`              // Timestamp when the record was created
 	UpdatedAt time.Time      `json:"updated_at"`              // Timestamp when the record was last updated
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"` // Timestamp when the record was soft deleted; index is used to speed up queries involving deletion
