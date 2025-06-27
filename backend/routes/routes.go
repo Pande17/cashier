@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"cashier-machine/app/controller" // Import the controller package for handling route logic
+	"cashier-machine/handler/controller" // Import the controller package for handling route logic
 
 	"github.com/gofiber/fiber/v2" // Import the Fiber package for creating and managing routes
 )
@@ -30,9 +30,9 @@ func RouteSetup(r *fiber.App) {
 	// cashierGroup.Delete("/barang/:id", controller.DeleteBarang) // Route to delete a Barang by ID
 
 	// Define routes for 'invoice'
-	cashierGroup.Get("/invoice", controller.GetInvoices)        // Route to get all Invoice data
+	cashierGroup.Get("/invoice", controller.GetInvoices)                  // Route to get all Invoice data
 	cashierGroup.Get("/invoice/:kode_invoice", controller.GetInvoiceByID) // Route to get a specific Invoice by ID
-	cashierGroup.Post("/invoice", controller.InsertInvoiceData) // Route to create a new Invoice record
+	cashierGroup.Post("/invoice", controller.InsertInvoiceData)           // Route to create a new Invoice record
 
 	// Define routes for 'Kode Diskon'
 	cashierGroup.Get("/kode-diskon", controller.GetKodeDiskon)         // Route to get all Kode Diskon data

@@ -32,6 +32,10 @@ RUN apk add --no-cache mysql-client
 # Set working directory to /app
 WORKDIR /app
 
+# Copy the .air.toml configuration file
+# COPY .air.toml .
+COPY . .
+
 # Run autoreload or direct binary depending on environment
 CMD ["air", "-c", ".air.toml"]
 

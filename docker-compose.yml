@@ -12,7 +12,7 @@ services:
             CASHIER_MACHINE_FRONTEND: 'http://localhost:5173'
             DB_HOST: mysql
             DB_USER: root
-            DB_PASS: '' # Password kosong untuk MySQL
+            DB_PASS: 'root' # Password for MySQL root user
             DB_NAME: machine-cashier
         env_file:
             - ./backend/.env
@@ -24,45 +24,37 @@ services:
             - cashier-network
 
     mysql:
-        image: mysql:8.0
+        image: mysql:latest
+        restart: always
         environment:
-            MYSQL_ROOT_PASSWORD: 'root' # Tentukan password untuk user root
+            MYSQL_ROOT_PASSWORD: root # Root password
             MYSQL_DATABASE: machine-cashier
+            MYSQL_USER: user # Optional user for connecting
+            MYSQL_PASSWORD: password # Password for 'user'
         ports:
             - '3306:3306'
         volumes:
-            - mysql-data:/var/lib/mysql # Volume untuk penyimpanan data MySQL
+            - mysql_data:/var/lib/mysql
         networks:
             - cashier-network
 
-        # frontend:
-        #   build:
-        #     context: ./web
-        #     dockerfile: dev.Dockerfile
-        #   environment:
-        #     VITE_BACKEND: 'http://localhost:3000'
-        #   ports:
-        #     - '5173:5173'
-        #   volumes:
-        #     - ./web/public:/app/public
-        #     - ./web/src:/app/src
-        #   networks:
-        #     - cashier-network
-
-        # reverse-proxy:
-        #   build:
-        #     context: ./proxy
-        #   environment:
-        #     FRONTEND_HOST: 'http://localhost:5173'
-        #     BACKEND_HOST: 'http://localhost:3000'
-        #   ports:
-        #     - '80:80'
-        #   networks:
-        #     - cashier-network
+    phpmyadmin:
+        image: phpmyadmin:latest
+        restart: always
+        environment:
+            PMA_HOST: mysql # This points to the MySQL service
+            PMA_USER: root # Using root for phpMyAdmin login
+            PMA_PASSWORD: root # This password should match MYSQL_ROOT_PASSWORD
+        ports:
+            - '8080:80'
+        depends_on:
+            - mysql
+        networks:
+            - cashier-network
 
 volumes:
-    mysql-data: # Volume untuk penyimpanan data MySQL
+    mysql_data: {} # Named volume for MySQL data persistence
 
 networks:
     cashier-network:
-        driver: bridge
+        driver: bridge # Use bridge network for inter-container communication
