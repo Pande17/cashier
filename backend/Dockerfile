@@ -1,46 +1,39 @@
-# Step 1: Build stage for Go application
-FROM golang:1.24.2 AS builder
+# Stage 1 - wkhtmltopdf dependencies
+FROM surnet/alpine-wkhtmltopdf:3.20.0-0.12.6-full AS wkhtmltopdf
 
-# Set working directory in the container
+# Stage 2 - Go with wkhtmltopdf and air autoreload
+FROM golang:1.24.2-alpine3.20
+
+# Add wkhtmltopdf required package
+RUN apk add --no-cache \
+    libstdc++ libx11 libxrender \
+    libxext fontconfig freetype \
+    ttf-droid ttf-freefont ttf-liberation \
+    bash ca-certificates wget
+
+# Copy the wkhtmltopdf binary from "wkhtmltopdf" reference image
+COPY --from=wkhtmltopdf /bin/wkhtmltopdf    /usr/local/bin/wkhtmltopdf
+COPY --from=wkhtmltopdf /bin/wkhtmltoimage  /usr/local/bin/wkhtmltoimage
+COPY --from=wkhtmltopdf /bin/libwkhtmltox*  /usr/local/bin
+
+# Ensure binaries are executable
+RUN chmod +x /usr/local/bin/wkhtmltopdf && \
+    chmod +x /usr/local/bin/wkhtmltoimage
+
+# Add /usr/local/bin to PATH explicitly
+ENV PATH="/usr/local/bin:${PATH}"
+
+# Install Go Air autoreload package
+RUN go install github.com/air-verse/air@v1.52.3
+
+# Install MySQL client for database interaction
+RUN apk add --no-cache mysql-client
+
+# Set working directory to /app
 WORKDIR /app
 
-# Install air for hot reloading
-RUN go install github.com/cosmtrek/air@latest
+# Run autoreload or direct binary depending on environment
+CMD ["air", "-c", ".air.toml"]
 
-# Copy go.mod and go.sum files to download dependencies
-COPY go.mod go.sum ./
-
-# Download dependencies
-RUN go mod tidy
-
-# Copy the entire project into the container
-COPY . .
-
-# Step 2: Final stage with minimal image to run the application
-FROM debian:bullseye
-
-# Install necessary dependencies for running Go, MySQL client, and wkhtmltopdf
-RUN apt-get update && apt-get install -y \
-    mysql-client \
-    wkhtmltopdf \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
-
-# Set working directory for the application in the final image
-WORKDIR /root
-
-# Copy the Go binary from the builder stage to the final image
-COPY --from=builder /app/backend /root/
-
-# Expose the port your Go application will run on (default: 3000)
+# Expose port 3000
 EXPOSE 3000
-
-# Set environment variables for Go application (replace with your actual values)
-ENV DB_USER=root
-ENV DB_PASS=""
-ENV DB_HOST=mysql
-ENV DB_PORT=3306
-ENV DB_NAME=machine-cashier
-
-# Command to run the Go application with air for hot-reloading
-CMD ["air"]

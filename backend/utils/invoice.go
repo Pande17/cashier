@@ -39,28 +39,14 @@ func InsertInvoiceData(data model.Invoice) (model.Invoice, error) {
 	data.Model.CreatedAt = time.Now() // Set the creation timestamp
 	data.Model.UpdatedAt = time.Now() // Set the update timestamp
 
-	// Get the discount based on the discount code
-	if data.Kode_diskon != "" {
-		diskon, err := GetDiskonByCode(data.Kode_diskon) // Retrieve discount information
-		if err != nil {
-			return data, err // Return the error if retrieval fails
-		}
-
-		// Calculate the discount amount
-		var diskonAmount float64
-		if diskon.Type == "PERCENT" {
-			diskonAmount = data.Subtotal * (diskon.Amount / 100) // Calculate percentage-based discount
-		} else {
-			diskonAmount = diskon.Amount // Set fixed amount discount
-		}
-
-		// Apply the discount to the subtotal
-		data.Diskon = diskonAmount
-		data.Total = data.Subtotal - data.Diskon
-	} else {
-		data.Diskon = 0 // No discount applied
-		data.Total = data.Subtotal
+	// Generate the invoice code before saving the sales data
+	kodeInvoice, err := GenerateKodeInvoice(repository.Mysql.DB)
+	if err != nil {
+		return data, err // Return the error if generating the invoice code fails
 	}
+
+	// Assign the generated invoice code to the invoice data
+	data.KodeInvoice = kodeInvoice
 
 	// Convert model.Invoice to modelfunc.Invoice
 	invoice := modelfunc.Invoice{
@@ -68,17 +54,12 @@ func InsertInvoiceData(data model.Invoice) (model.Invoice, error) {
 	}
 
 	// Save the sales data to the database to get the generated ID
-	err := invoice.CreateInvoice(repository.Mysql.DB)
+	err = invoice.CreateInvoice(repository.Mysql.DB)
 	if err != nil {
 		return data, err // Return the error if saving fails
 	}
 
-	// Generate the invoice code after saving the sales data
-	data.ID = invoice.Invoice.ID
-	data.Kode_invoice = GenerateInvoice(data.ID)
-
 	// Update the sales data with the newly generated invoice code
-	invoice.Invoice.Kode_invoice = data.Kode_invoice
 	err = invoice.Update(repository.Mysql.DB)
 	if err != nil {
 		return data, err // Return the error if updating fails

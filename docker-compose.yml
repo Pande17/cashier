@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+    backend:
+        build:
+            context: ./backend
+            dockerfile: 'Dockerfile'
+        depends_on:
+            - mysql
+        environment:
+            APP_DEBUG: 'false'
+            CASHIER_MACHINE_FRONTEND: 'http://localhost:5173'
+            DB_HOST: mysql
+            DB_USER: root
+            DB_PASS: '' # Password kosong untuk MySQL
+            DB_NAME: machine-cashier
+        env_file:
+            - ./backend/.env
+        ports:
+            - '3000:3000'
+        volumes:
+            - ./backend:/app
+        networks:
+            - cashier-network
+
+    mysql:
+        image: mysql:8.0
+        environment:
+            MYSQL_ROOT_PASSWORD: 'root' # Tentukan password untuk user root
+            MYSQL_DATABASE: machine-cashier
+        ports:
+            - '3306:3306'
+        volumes:
+            - mysql-data:/var/lib/mysql # Volume untuk penyimpanan data MySQL
+        networks:
+            - cashier-network
+
+        # frontend:
+        #   build:
+        #     context: ./web
+        #     dockerfile: dev.Dockerfile
+        #   environment:
+        #     VITE_BACKEND: 'http://localhost:3000'
+        #   ports:
+        #     - '5173:5173'
+        #   volumes:
+        #     - ./web/public:/app/public
+        #     - ./web/src:/app/src
+        #   networks:
+        #     - cashier-network
+
+        # reverse-proxy:
+        #   build:
+        #     context: ./proxy
+        #   environment:
+        #     FRONTEND_HOST: 'http://localhost:5173'
+        #     BACKEND_HOST: 'http://localhost:3000'
+        #   ports:
+        #     - '80:80'
+        #   networks:
+        #     - cashier-network
+
+volumes:
+    mysql-data: # Volume untuk penyimpanan data MySQL
+
+networks:
+    cashier-network:
+        driver: bridge

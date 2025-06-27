@@ -2,8 +2,10 @@ package controller
 
 import (
 	"cashier-machine/model"
+	repository "cashier-machine/repository/config"
 	"cashier-machine/utils"
 	"strconv"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	logrus "github.com/sirupsen/logrus"
@@ -18,7 +20,6 @@ func InsertInvoiceData(c *fiber.Ctx) error {
 		KodeDiskon  string  `json:"kode_diskon"` // Discount code applied
 		Diskon      float64 `json:"diskon"`      // Discount amount
 		Total       float64 `json:"total"`       // Total amount after discount
-		CreatedBy   string  `json:"created_by"`  // Person who created the sale entry
 		ItemInvoice []struct {
 			Kode   string `json:"kode_barang"` // Item code
 			Jumlah uint   `json:"jumlah"`      // Quantity of the item sold
@@ -36,22 +37,33 @@ func InsertInvoiceData(c *fiber.Ctx) error {
 			})
 	}
 
+	// Generate the invoice code before saving the data
+	kodeInvoice, err := utils.GenerateKodeInvoice(repository.Mysql.DB)
+	if err != nil {
+		// Return an error response if generating the invoice code fails
+		logrus.Printf("Error generating invoice code: %s\n", err.Error())
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(map[string]interface{}{
+				"message": "Failed to generate invoice code",
+			})
+	}
+
 	// Create a Invoice model instance with the parsed data
 	invoice := model.Invoice{
-		KodeInvoice:     req.KodeInvoice,
+		KodeInvoice:     kodeInvoice, // Set the generated invoice code
 		MemberID:        req.MemberID,
-		TanggalBeli:     req.NamaPembeli,
-		JatuhTempo:      req.Subtotal,
-		Ppn:             req.KodeDiskon,
-		BiayaPengiriman: req.Diskon,
-		Subtotal:        req.Total,
+		TanggalBeli:     time.Now(),                          // Set the purchase date (current date)
+		JatuhTempo:      time.Now().Add(30 * 24 * time.Hour), // Set due date as 30 days after purchase
+		Ppn:             0,                                   // Assuming no VAT for now
+		BiayaPengiriman: 0,                                   // Assuming no shipping fee for now
+		Subtotal:        req.Subtotal,
 		DiskonTotal:     req.Diskon,
 		Diskon:          req.Diskon,
 		Total:           req.Total,
 		Model: model.Model{
-			CreatedBy: req.CreatedBy,          // Set the creator of the sale entry
-			CreatedAt: utils.GetCurrentTime(), // Set the creation time
-			UpdatedAt: utils.GetCurrentTime(), // Set the update time
+			// CreatedBy: req., // Set the creator of the sale entry
+			CreatedAt: time.Now(),    // Set the creation time
+			UpdatedAt: time.Now(),    // Set the update time
 		},
 	}
 
@@ -59,17 +71,18 @@ func InsertInvoiceData(c *fiber.Ctx) error {
 	_, errInsertInvoice := utils.InsertInvoiceData(invoice)
 	if errInsertInvoice != nil {
 		// Log the error and return an Internal Server Error response if insertion fails
-		logrus.Printf("Terjadi error : %s\n", errInsertInvoice.Error())
+		logrus.Printf("Error inserting invoice data: %s\n", errInsertInvoice.Error())
 		return c.Status(fiber.StatusInternalServerError).
-			JSON(map[string]any{
+			JSON(map[string]interface{}{
 				"message": "Server Error", // Error message for server error
 			})
 	}
 
 	// Return a successful response if insertion succeeds
 	return c.Status(fiber.StatusOK).
-		JSON(map[string]any{
-			"message": "Berhasil Menambahkan Invoice", // Success message
+		JSON(map[string]interface{}{
+			"message": "Berhasil menambahkan data invoice", // Success message
+			"data":    invoice,                             // Return the invoice data
 		})
 }
 
