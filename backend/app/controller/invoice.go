@@ -4,7 +4,6 @@ import (
 	"cashier-machine/model"
 	repository "cashier-machine/repository/config"
 	"cashier-machine/utils"
-	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -62,8 +61,8 @@ func InsertInvoiceData(c *fiber.Ctx) error {
 		Total:           req.Total,
 		Model: model.Model{
 			// CreatedBy: req., // Set the creator of the sale entry
-			CreatedAt: time.Now(),    // Set the creation time
-			UpdatedAt: time.Now(),    // Set the update time
+			CreatedAt: time.Now(), // Set the creation time
+			UpdatedAt: time.Now(), // Set the update time
 		},
 	}
 
@@ -109,41 +108,20 @@ func GetInvoices(c *fiber.Ctx) error {
 // GetInvoiceByID retrieves a specific 'invoice data' by its ID
 func GetInvoiceByID(c *fiber.Ctx) error {
 	// Extract and convert the sale ID from the request parameters
-	invoiceID, err := strconv.Atoi(c.Params("id"))
-	if err != nil {
-		// Return a Bad Request response if ID conversion fails
-		return c.Status(fiber.StatusBadRequest).JSON(
-			map[string]interface{}{
-				"message": "Invalid ID", // Error message for invalid ID
-			},
-		)
-	}
+	kodeInvoice := c.Params("kode_invoice")
 
 	// Retrieve the sale data by its ID
-	dataInvoice, err := utils.GetInvoiceByID(string(invoiceID))
+	dataInvoice, err := utils.GetInvoiceByID(kodeInvoice)
 	if err != nil {
 		if err.Error() == "record not found" {
 			// Return a Not Found response if no record is found with the given ID
-			return c.Status(fiber.StatusNotFound).JSON(
-				map[string]interface{}{
-					"message": "ID not found", // Error message for ID not found
-				},
-			)
+			return NotFound(c, "Data invoice tidak ditemukan", "Gagal mengambil data invoice")
 		}
 
 		// Return an Internal Server Error response for other errors
-		return c.Status(fiber.StatusInternalServerError).JSON(
-			map[string]interface{}{
-				"message": "Server Error", // Error message for server error
-			},
-		)
+		return Conflict(c, "Server Error", "Gagal mengambil data invoice")
 	}
 
 	// Return the specific sale's data with a success message
-	return c.Status(fiber.StatusOK).JSON(
-		map[string]interface{}{
-			"data":    dataInvoice, // Sale data
-			"message": "Success",   // Success message
-		},
-	)
+	return OK(c, "Berhasil mengambil data invoice", dataInvoice)
 }

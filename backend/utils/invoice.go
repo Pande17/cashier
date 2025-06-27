@@ -92,7 +92,7 @@ func GetInvoiceByID(kode string) (model.Invoice, error) {
 			KodeInvoice: kode, // Set the ID from the parameter
 		},
 	}
-	result, err := invoice.GetPByID(repository.Mysql.DB) // Retrieve the sales record by ID
+	result, err := invoice.GetInvByID(repository.Mysql.DB) // Retrieve the sales record by ID
 	if err != nil {
 		return model.Invoice{}, err // Return the error if retrieval fails
 	}
