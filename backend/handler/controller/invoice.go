@@ -110,6 +110,9 @@ func GetInvoiceByID(c *fiber.Ctx) error {
 	// Extract and convert the sale ID from the request parameters
 	kodeInvoice := c.Params("kode_invoice")
 
+	// Declare dataInvoice as a pointer to model.Invoice
+	var dataInvoice model.Invoice
+
 	// Retrieve the sale data by its ID
 	dataInvoice, err := utils.GetInvoiceByID(kodeInvoice)
 	if err != nil {
@@ -120,6 +123,21 @@ func GetInvoiceByID(c *fiber.Ctx) error {
 
 		// Return an Internal Server Error response for other errors
 		return Conflict(c, "Server Error", "Gagal mengambil data invoice")
+	}
+
+	// Log the retrieved data and its length
+
+	logrus.Info("Data Invoice yang diterima: ", dataInvoice)
+	logrus.Info("Jumlah item dalam data invoice: ", len(dataInvoice.InvoiceItems))
+
+	// Log individual details of the invoice, e.g., kode_invoice, total, and items
+	logrus.Info("Kode Invoice: ", dataInvoice.KodeInvoice)
+	logrus.Info("Total Invoice: ", dataInvoice.Total)
+
+	// Log item details in the invoice
+	for i, item := range dataInvoice.InvoiceItems {
+		logrus.Infof("Item %d: Kode Barang: %s, Quantity: %d, Harga: %f, Item Total: %f",
+			i+1, item.KodeBarang, item.Quantity, item.Harga, item.ItemTotal)
 	}
 
 	// Return the specific sale's data with a success message

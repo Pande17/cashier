@@ -32,9 +32,9 @@ func (inv *Invoice) GetAll(db *gorm.DB) ([]Invoice, error) {
 
 // GetPByID retrieves a single Invoice record by its ID
 func (inv *Invoice) GetInvByID(db *gorm.DB) (Invoice, error) {
-	res := Invoice{}                                                                       // Initialize an empty Invoice
-	err := db.Model(Invoice{}).Where("kode_invoice = ?", inv.KodeInvoice).Take(&res).Error // Query for a Invoice record with the given ID
-	if err != nil {                                                                        // Check if there was an error
+	res := Invoice{}                                                                                               // Initialize an empty Invoice
+	err := db.Model(Invoice{}).Preload("InvoiceItems").Where("kode_invoice = ?", inv.KodeInvoice).Take(&res).Error // Query for a Invoice record with the given ID
+	if err != nil {                                                                                                // Check if there was an error
 		return Invoice{}, err // Return an empty Invoice and the error
 	}
 	return res, nil // Return the retrieved Invoice and nil (no error)
@@ -43,7 +43,7 @@ func (inv *Invoice) GetInvByID(db *gorm.DB) (Invoice, error) {
 // Update modifies an existing Invoice record in the database
 func (inv *Invoice) Update(db *gorm.DB) error {
 	err := db.Model(Invoice{}).Where("kode_invoice = ?", inv.KodeInvoice).Updates(&inv).Error // Update the Invoice record with the given ID
-	if err != nil {                                                                 // Check if there was an error
+	if err != nil {                                                                           // Check if there was an error
 		return err // Return the error if the update fails
 	}
 	return nil // Return nil if the update is successful
@@ -52,7 +52,7 @@ func (inv *Invoice) Update(db *gorm.DB) error {
 // UpdateKodeInvoice updates the invoice code of an existing Invoice record
 func (inv *Invoice) UpdateKodeInvoice(db *gorm.DB) error {
 	err := db.Model(Invoice{}).Where("kode_invoice = ?", inv.KodeInvoice).Updates(&inv).Error // Update the Invoice record with the given ID (specifically for invoice code)
-	if err != nil {                                                                 // Check if there was an error
+	if err != nil {                                                                           // Check if there was an error
 		return err // Return the error if the update fails
 	}
 	return nil // Return nil if the update is successful
