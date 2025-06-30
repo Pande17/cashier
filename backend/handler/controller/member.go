@@ -84,11 +84,11 @@ func GetMemberByID(c *fiber.Ctx) error {
 
 // GetAllMembers retrieves all members from the system
 func GetAllMembers(c *fiber.Ctx) error {
-    logrus.Info("Fetching all members...")
-    members, err := modelfunc.GetAllMembers(repository.Mysql.DB)
-    if err != nil {
-        logrus.Errorf("Error: %s", err.Error())
-        return Conflict(c, "Server Error", "Gagal mengambil data member")
-    }
-    return OK(c, "Berhasil mengambil seluruh data member", members)
+	logrus.Info("Fetching all members...")
+	members, err := modelfunc.GetAllMembers(repository.Mysql.DB)
+	if err != nil {
+		logrus.Errorf("Error: %s", err.Error())
+		return Conflict(c, "Server Error", "Gagal mengambil data member")
+	}
+	return OK(c, "Berhasil mengambil seluruh data member", members)
 }
