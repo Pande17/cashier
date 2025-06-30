@@ -1,10 +1,18 @@
 # Stage 1 - wkhtmltopdf dependencies
 FROM surnet/alpine-wkhtmltopdf:3.20.0-0.12.6-full AS wkhtmltopdf
 
-# Stage 2 - Go with wkhtmltopdf and air autoreload
-FROM golang:1.22-alpine3.20
+# Stage 2 - Base image for Go, using Go 1.24.2 or compatible version
+FROM golang:1.24-alpine3.20
 
-# Add wkhtmltopdf required package
+# Install Go 1.24.2 manually (this may not be necessary if using official golang:1.24-alpine)
+RUN apk add --no-cache \
+    wget \
+    && wget https://golang.org/dl/go1.24.2.linux-amd64.tar.gz \
+    && tar -C /usr/local -xzf go1.24.2.linux-amd64.tar.gz \
+    && rm go1.24.2.linux-amd64.tar.gz \
+    && ln -s /usr/local/go/bin/go /usr/bin/go
+
+# Add wkhtmltopdf required packages
 RUN apk add --no-cache \
     libstdc++ libx11 libxrender \
     libxext fontconfig freetype \
@@ -32,12 +40,14 @@ RUN apk add --no-cache mysql-client
 # Set working directory to /app
 WORKDIR /app
 
-# Copy the .air.toml configuration file
-# COPY .air.toml .
-COPY . .
+# Copy application code into the container
+COPY . . 
 
-# Run autoreload or direct binary depending on environment
-CMD ["air", "-c", ".air.toml"]
+# Ensure go modules are tidy
+RUN go mod tidy
 
 # Expose port 3000
 EXPOSE 3000
+
+# Run autoreload or direct binary depending on environment
+CMD ["air", "-c", ".air.toml"]

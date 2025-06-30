@@ -4,6 +4,7 @@ import (
 	"cashier-machine/handler/controller" // Import the controller package for handling route logic
 
 	"github.com/gofiber/fiber/v2" // Import the Fiber package for creating and managing routes
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 // Function to setup the route API
@@ -15,14 +16,14 @@ func RouteSetup(r *fiber.App) {
 
 	// Middleware to handle CORS for the cashier routes
 	// This middleware allows cross-origin requests to the cashier routes
-	// cashierGroup.Use(cors.New(cors.Config{
-	// 	AllowOrigins: "*", // Bisa disesuaikan dengan domain yang ingin diizinkan
-	// 	AllowMethods: "GET,POST,DELETE,PUT",
-	// 	AllowHeaders: "Origin, Content-Type, Accept",
-	// }))
+	cashierGroup.Use(cors.New(cors.Config{
+		AllowOrigins: "*", // Bisa disesuaikan dengan domain yang ingin diizinkan
+		AllowMethods: "GET,POST,DELETE,PUT",
+		AllowHeaders: "Origin, Content-Type, Accept",
+	}))
 
 	// Define routes for 'Barang'
-	// cashierGroup.Get("/barang", controller.GetBarang)           // Route to get all Barang data
+	cashierGroup.Get("/barang", controller.GetBarang) // Route to get all Barang data
 	// cashierGroup.Get("/barang/:id", controller.GetBarangByID)   // Route to get a specific Barang by ID
 	// cashierGroup.Post("/barang", controller.CreateBarang)       // Route to create a new Barang record
 	// cashierGroup.Put("/barang/:id", controller.UpdateBarang)    // Route to update an existing Barang by ID

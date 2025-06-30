@@ -1,16 +1,10 @@
 package utils
 
-// import (
-// 	"cashier-machine/model"
-// 	repository "cashier-machine/repository/config"
-// 	"cashier-machine/repository/modelfunc"
-// 	"errors"
-// 	"fmt"
-// 	"strconv"
-// 	"time"
-
-// 	"gorm.io/gorm"
-// )
+import (
+	"cashier-machine/model"
+	repository "cashier-machine/repository/config"
+	"cashier-machine/repository/modelfunc"
+)
 
 // // Function to create a new item
 // func CreateBarang(data model.Barang) (model.CreateB, error) {
@@ -69,11 +63,11 @@ package utils
 // 	return createB, nil // Return the response struct
 // }
 
-// // Function to get a list of all items
-// func GetBarang() ([]model.Barang, error) {
-// 	var barang modelfunc.Barang               // Initialize repository.Barang
-// 	return barang.GetAll(repository.Mysql.DB) // Retrieve all item records
-// }
+// Function to get a list of all items
+func GetBarang() ([]model.Barang, error) {
+	var barang modelfunc.Barang               // Initialize repository.Barang
+	return barang.GetAll(repository.Mysql.DB) // Retrieve all item records
+}
 
 // // Function to get item data by its ID
 // func GetBarangByID(id uint64) (*model.Details, error) {
@@ -120,7 +114,7 @@ package utils
 // 		Stok:       barangModel.Stok,       // Assign Stok to response
 // 		Model:      barangModel.Model,      // Assign Model to response
 // 		// CreatedBy:  barangModel.CreatedBy,  // Assign CreatedBy to response
-// 		Histori:    histori,                // Include historical data in response
+// 		Histori: histori, // Include historical data in response
 // 	}
 
 // 	return &details, nil // Return the response struct

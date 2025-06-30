@@ -1,13 +1,11 @@
 package controller
 
-// import (
-// 	"cashier-machine/model"
-// 	"cashier-machine/utils"
-// 	"strconv"
+import (
+	"cashier-machine/utils"
 
-// 	"github.com/gofiber/fiber/v2" // Import Fiber for handling HTTP requests and responses
-// 	"github.com/sirupsen/logrus"  // Import logrus for logging
-// )
+	"github.com/gofiber/fiber/v2" // Import Fiber for handling HTTP requests and responses
+	"github.com/sirupsen/logrus"  // Import logrus for logging
+)
 
 // // Function to create a new Barang (item)
 // func CreateBarang(c *fiber.Ctx) error {
@@ -58,7 +56,7 @@ package controller
 // 		TipeBarang: req.Tipe,
 // 		Stok:       req.Stok,
 // 		// CreatedBy:  req.CreateBy,
-// 		Histori:    []model.HistoriASKM{},
+// 		Histori: []model.HistoriASKM{},
 // 	}, req.Histori.Keterangan, int(req.Stok), req.Histori.Status)
 
 // 	// Handle errors during creation and respond accordingly
@@ -78,28 +76,19 @@ package controller
 // 		})
 // }
 
-// // Function to retrieve all Barang (items) from the database
-// func GetBarang(c *fiber.Ctx) error {
-// 	// Retrieve all Barang (items) from the database
-// 	dataBarang, err := utils.GetBarang()
-// 	if err != nil {
-// 		// Handle errors during retrieval
-// 		logrus.Error("Failed to retrieve Barang list: ", err.Error())
-// 		return c.Status(fiber.StatusInternalServerError).JSON(
-// 			map[string]any{
-// 				"message": "Server Error", // Response message for server error
-// 			},
-// 		)
-// 	}
+// Function to retrieve all Barang (items) from the database
+func GetBarang(c *fiber.Ctx) error {
+	// Retrieve all Barang (items) from the database
+	dataBarang, err := utils.GetBarang()
+	if err != nil {
+		// Handle errors during retrieval
+		logrus.Error("Failed to retrieve Barang list: ", err.Error())
+		return Conflict(c, "Gagal mengambil data Barang", err.Error())
+	}
 
-// 	// Return all Barang data
-// 	return c.Status(fiber.StatusOK).JSON(
-// 		map[string]any{
-// 			"data":    dataBarang,
-// 			"message": "Success Get All Barang", // Success message
-// 		},
-// 	)
-// }
+	// Return all Barang data
+	return OK(c, "Berhasil mengambil data Barang", dataBarang)
+}
 
 // // Function to retrieve a specific Barang (item) by its ID
 // func GetBarangByID(c *fiber.Ctx) error {
@@ -175,7 +164,7 @@ package controller
 // 	// Return the updated Barang's ID
 // 	return c.Status(fiber.StatusOK).JSON(
 // 		map[string]any{
-// 			"id": dataBarang.ID,
+// 			// "id": dataBarang.ID,
 // 		},
 // 	)
 // }
