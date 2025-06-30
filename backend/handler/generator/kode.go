@@ -3,6 +3,7 @@ package generator
 import (
 	"cashier-machine/model"
 	"fmt"
+	"strconv"
 	"time"
 
 	"gorm.io/gorm"
@@ -32,45 +33,39 @@ func GenerateKodeInvoice(db *gorm.DB) (string, error) {
 	return kodeInvoice, nil
 }
 
-// Function to generate ID for invoice item
+// GenerateIDInvoiceItem generates a unique ID for an invoice item based on the invoice code.
 func GenerateIDInvoiceItem(db *gorm.DB, kodeInvoice string) (string, error) {
 	// Get the current date in YYYYMMDD format
 	today := time.Now().Format("20060102")
 
-	// Initialize the count variable to 1 (since we want to start from 1)
-	var count int64
-	var uniqueID string
-	isUnique := false
+	// Variable to store the next ID to be generated
+	var lastItem model.InvoiceItem
 
-	// Loop until a unique ID is generated
-	for !isUnique {
-		// Count the number of items for the given invoice code
-		err := db.Model(&model.InvoiceItem{}).Where("kode_invoice = ?", kodeInvoice).Count(&count).Error
-		if err != nil {
-			return "", err
-		}
+	// Get the last item based on the given invoice code, ordered by ID
+	err := db.Model(&model.InvoiceItem{}).
+		Where("kode_invoice = ?", kodeInvoice).
+		Order("id desc").
+		First(&lastItem).Error
 
-		// Increment the count and generate the ID
-		idIncrement := count + 1
-		idString := fmt.Sprintf("%04d", idIncrement)
-		uniqueID = fmt.Sprintf("ITM%s%s", today, idString)
-
-		// Check if the generated ID already exists in the database
-		var exists int64
-		err = db.Model(&model.InvoiceItem{}).Where("id = ?", uniqueID).Count(&exists).Error
-		if err != nil {
-			return "", err
-		}
-
-		// If ID doesn't exist, it's unique, so we can exit the loop
-		if exists == 0 {
-			isUnique = true
-		} else {
-			// If ID exists, increment the count and try again
-			count++
-		}
+	if err != nil && err.Error() != "record not found" {
+		return "", err
 	}
 
-	// Return the unique ID
-	return uniqueID, nil
+	// Generate the new ID by incrementing the last number
+	var newID string
+	if err != nil && err.Error() == "record not found" {
+		// If no record found, it means this is the first item for this invoice
+		newID = fmt.Sprintf("ITM%s0001", today)
+	} else {
+		// Extract the numeric part of the last ID and increment it
+		lastID := lastItem.ID[len(lastItem.ID)-4:] // Get the last 4 digits
+		lastIDInt, err := strconv.Atoi(lastID)
+		if err != nil {
+			return "", err
+		}
+		newID = fmt.Sprintf("ITM%s%04d", today, lastIDInt+1)
+	}
+
+	// Return the newly generated ID
+	return newID, nil
 }
