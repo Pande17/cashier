@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"cashier-machine/model" // Import model yang sesuai dengan struktur model di aplikasi Anda
@@ -40,6 +41,14 @@ func OpenDB() (*gorm.DB, error) {
 		return nil, fmt.Errorf("failed to connect to database: %w", err)
 	}
 
+	// Now that the DB connection is open, set the time zone
+	err = mysqlConn.Exec("SET time_zone = '+08:00'").Error
+	if err != nil {
+		log.Printf("Error setting time zone: %s\n", err.Error())
+		return nil, fmt.Errorf("failed to set time zone: %w", err)
+	}
+
+	// Assign the DB connection to Mysql variable
 	Mysql = MysqlDB{
 		DB: mysqlConn,
 	}
