@@ -2,7 +2,7 @@
 FROM surnet/alpine-wkhtmltopdf:3.20.0-0.12.6-full AS wkhtmltopdf
 
 # Stage 2 - Go with wkhtmltopdf and air autoreload
-FROM golang:1.24.2-alpine3.20
+FROM golang:1.22-alpine3.20
 
 # Add wkhtmltopdf required package
 RUN apk add --no-cache \

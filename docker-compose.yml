@@ -5,6 +5,11 @@ services:
         build:
             context: ./backend
             dockerfile: 'Dockerfile'
+        deploy:
+            resources:
+                limits:
+                    cpus: '1.0'
+                    memory: 512M # Batasi penggunaan memori hingga 512 MB
         depends_on:
             - mysql
         environment:
@@ -12,7 +17,7 @@ services:
             CASHIER_MACHINE_FRONTEND: 'http://localhost:5173'
             DB_HOST: mysql
             DB_USER: root
-            DB_PASS: 'root' # Password for MySQL root user
+            DB_PASS: 'root' # Password untuk user root MySQL
             DB_NAME: machine-cashier
         env_file:
             - ./backend/.env
@@ -24,17 +29,18 @@ services:
             - cashier-network
 
     mysql:
-        image: mysql:latest
+        image: mysql:8.0-debian # Menggunakan image MySQL versi 8.0-debian
         restart: always
         environment:
-            MYSQL_ROOT_PASSWORD: root # Root password
+            MYSQL_ROOT_PASSWORD: root # Password untuk user root MySQL
             MYSQL_DATABASE: machine-cashier
-            MYSQL_USER: user # Optional user for connecting
-            MYSQL_PASSWORD: password # Password for 'user'
+            MYSQL_USER: user # User untuk koneksi ke database
+            MYSQL_PASSWORD: password # Password untuk user 'user'
         ports:
             - '3306:3306'
         volumes:
-            - mysql_data:/var/lib/mysql
+            - ./my.cnf:/etc/mysql/my.cnf # Menggunakan konfigurasi MySQL
+            - mysql_data:/var/lib/mysql # Volume untuk persistensi data MySQL
         networks:
             - cashier-network
 
@@ -42,9 +48,9 @@ services:
         image: phpmyadmin:latest
         restart: always
         environment:
-            PMA_HOST: mysql # This points to the MySQL service
-            PMA_USER: root # Using root for phpMyAdmin login
-            PMA_PASSWORD: root # This password should match MYSQL_ROOT_PASSWORD
+            PMA_HOST: mysql # Mengarah ke service MySQL
+            PMA_USER: root
+            PMA_PASSWORD: root
         ports:
             - '8080:80'
         depends_on:
@@ -53,8 +59,8 @@ services:
             - cashier-network
 
 volumes:
-    mysql_data: {} # Named volume for MySQL data persistence
+    mysql_data: {} # Volume untuk data MySQL
 
 networks:
     cashier-network:
-        driver: bridge # Use bridge network for inter-container communication
+        driver: bridge # Jaringan bridge untuk komunikasi antar container
