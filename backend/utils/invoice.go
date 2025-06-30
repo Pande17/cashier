@@ -4,68 +4,52 @@ import (
 	"cashier-machine/model"
 	repository "cashier-machine/repository/config"
 	"cashier-machine/repository/modelfunc"
-	"fmt"
-	"time"
-
-	"gorm.io/gorm"
+	"log"
 )
 
-// Fungsi untuk menghasilkan kode invoice
-func GenerateKodeInvoice(db *gorm.DB) (string, error) {
-	// Mendapatkan tanggal hari ini dalam format YYYYMMDD
-	today := time.Now().Format("20060102")
-
-	// Mencari jumlah invoice yang sudah ada untuk hari ini
-	var count int64
-	err := db.Model(&model.Invoice{}).Where("DATE(tanggal_beli) = ?", time.Now().Format("2006-01-02")).Count(&count).Error
-	if err != nil {
-		return "", err
+// Function to insert Invoice Item data into the database
+func InsertInvoiceItem(invoiceItem model.InvoiceItem) error {
+	// Insert the invoice item into the database
+	if err := repository.Mysql.DB.Create(&invoiceItem).Error; err != nil {
+		return err
 	}
-
-	// Increment ID berdasarkan jumlah invoice yang ada + 1
-	idIncrement := count + 1
-
-	// Format ID increment dengan 4 digit (0001, 0002, dst)
-	idString := fmt.Sprintf("%04d", idIncrement)
-
-	// Membuat kode invoice
-	kodeInvoice := fmt.Sprintf("INV%s%s", today, idString)
-
-	return kodeInvoice, nil
+	return nil
 }
 
-// Function to insert sales data into the database
+// Function to insert Invoice data into the database
 func InsertInvoiceData(data model.Invoice) (model.Invoice, error) {
-	data.Model.CreatedAt = time.Now() // Set the creation timestamp
-	data.Model.UpdatedAt = time.Now() // Set the update timestamp
-
-	// Generate the invoice code before saving the sales data
-	kodeInvoice, err := GenerateKodeInvoice(repository.Mysql.DB)
-	if err != nil {
-		return data, err // Return the error if generating the invoice code fails
-	}
-
-	// Assign the generated invoice code to the invoice data
-	data.KodeInvoice = kodeInvoice
-
-	// Convert model.Invoice to modelfunc.Invoice
+	// Create an Invoice model instance with the provided data
 	invoice := modelfunc.Invoice{
-		Invoice: data, // Initialize with the provided sales data
+		Invoice: data, // Initialize with the provided invoice data
 	}
 
-	// Save the sales data to the database to get the generated ID
-	err = invoice.CreateInvoice(repository.Mysql.DB)
+	// Save the invoice data to the database (this will insert the invoice into the database)
+	err := invoice.CreateInvoice(repository.Mysql.DB)
 	if err != nil {
-		return data, err // Return the error if saving fails
+		log.Println("Error creating invoice:", err)
+		return data, err // Return the error if creation fails
 	}
 
-	// Update the sales data with the newly generated invoice code
-	err = invoice.Update(repository.Mysql.DB)
-	if err != nil {
-		return data, err // Return the error if updating fails
+	// Insert the invoice items into the database
+	for _, item := range data.InvoiceItems {
+		invoiceItem := model.InvoiceItem{
+			KodeInvoice:  data.KodeInvoice,
+			KodeBarang:   item.KodeBarang,
+			Quantity:     item.Quantity,
+			Harga:        item.Harga,
+			DiskonBarang: item.DiskonBarang,
+			ItemTotal:    item.ItemTotal, // Assuming ItemTotal is already calculated
+		}
+
+		// Insert each invoice item
+		errInsertItem := InsertInvoiceItem(invoiceItem)
+		if errInsertItem != nil {
+			log.Println("Error inserting invoice item:", errInsertItem)
+			return data, errInsertItem // Return the error if inserting item fails
+		}
 	}
 
-	return invoice.Invoice, nil // Return the updated sales record
+	return invoice.Invoice, nil // Return the updated invoice after successfully inserting it and its items
 }
 
 // Function to get all sales data
