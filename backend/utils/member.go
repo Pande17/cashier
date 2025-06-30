@@ -27,9 +27,9 @@ func UpdateMemberData(member model.Member) (model.Member, error) {
 	return updatedMember, nil
 }
 
-// SoftDeleteMemberData performs a soft delete on a member (sets deleted_at field)
-func SoftDeleteMemberData(memberID string) error {
-	err := modelfunc.SoftDeleteMember(repository.Mysql.DB, memberID)
+// DeleteMemberData performs a soft delete on a member (sets deleted_at field)
+func DeleteMemberData(memberID string) error {
+	err := modelfunc.DeleteMember(repository.Mysql.DB, memberID)
 	if err != nil {
 		log.Println("Error soft deleting member:", err)
 		return err

@@ -24,8 +24,8 @@ func UpdateMember(db *gorm.DB, member model.Member) (model.Member, error) {
 	return member, nil
 }
 
-// SoftDeleteMember sets the deleted_at field to the current time (soft delete)
-func SoftDeleteMember(db *gorm.DB, memberID string) error {
+// DeleteMember sets the deleted_at field to the current time (soft delete)
+func DeleteMember(db *gorm.DB, memberID string) error {
 	err := db.Model(&model.Member{}).Where("id = ?", memberID).Update("deleted_at", gorm.Expr("NOW()")).Error
 	if err != nil {
 		return err

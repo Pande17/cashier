@@ -34,6 +34,13 @@ func RouteSetup(r *fiber.App) {
 	cashierGroup.Get("/invoice/:kode_invoice", controller.GetInvoiceByID) // Route to get a specific Invoice by ID
 	cashierGroup.Post("/invoice", controller.InsertInvoiceData)           // Route to create a new Invoice record
 
+	// Define routes for 'Member'
+	cashierGroup.Get("/member", controller.GetAllMembers)       // Route to get all Member data
+	cashierGroup.Get("/member/:id", controller.GetMemberByID)   // Route to get a specific Member by ID
+	cashierGroup.Post("/member", controller.InsertMember)       // Route to create a new
+	cashierGroup.Put("/member", controller.UpdateMember)        // Route to update an existing Member
+	cashierGroup.Delete("/member/:id", controller.DeleteMember) // Route to soft delete a Member by ID
+
 	// Define routes for 'Kode Diskon'
 	cashierGroup.Get("/kode-diskon", controller.GetKodeDiskon)         // Route to get all Kode Diskon data
 	cashierGroup.Get("/kode-diskon/:id", controller.GetDiskonByID)     // Route to get a specific Kode Diskon by ID
