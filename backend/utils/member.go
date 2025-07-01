@@ -19,6 +19,7 @@ func InsertMemberData(member model.Member) (model.Member, error) {
 
 // UpdateMemberData updates an existing member's details
 func UpdateMemberData(member model.Member) (model.Member, error) {
+	// Pass the updated member to modelfunc for actual database update
 	updatedMember, err := modelfunc.UpdateMember(repository.Mysql.DB, member)
 	if err != nil {
 		log.Println("Error updating member data:", err)

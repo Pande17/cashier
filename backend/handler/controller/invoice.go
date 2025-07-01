@@ -151,11 +151,11 @@ func GetInvoices(c *fiber.Ctx) error {
 		return Conflict(c, "Server Error", "Gagal mengambil data invoice")
 	}
 
-	if dataInvoices != nil {
-		// Log the retrieved data and its length
-		logrus.Info("Data Invoice yang diterima: ", dataInvoices)
-		logrus.Info("Jumlah item dalam data invoice: ", len(dataInvoices))
-	}
+	// if dataInvoices != nil {
+	// 	// Log the retrieved data and its length
+	// 	logrus.Info("Data Invoice yang diterima: ", dataInvoices)
+	// 	logrus.Info("Jumlah item dalam data invoice: ", len(dataInvoices))
+	// }
 
 	// Return the retrieved sales data with a success message
 	return OK(c, "Berhasil mengambil seluruh data invoice", dataInvoices)

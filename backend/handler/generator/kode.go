@@ -69,3 +69,27 @@ func GenerateIDInvoiceItem(db *gorm.DB, kodeInvoice string) (string, error) {
 	// Return the newly generated ID
 	return newID, nil
 }
+
+// Fungsi untuk menghasilkan kode ID Member
+func GenerateIDMember(db *gorm.DB) (string, error) {
+	// Mendapatkan tanggal hari ini dalam format YYYYMMDD
+	today := time.Now().Format("20060102")
+
+	// Mencari jumlah member yang sudah ada untuk hari ini
+	var count int64
+	err := db.Model(&model.Member{}).Where("DATE(created_at) = ?", time.Now().Format("2006-01-02")).Count(&count).Error
+	if err != nil {
+		return "", err
+	}
+
+	// Increment ID berdasarkan jumlah member yang ada + 1
+	idIncrement := count + 1
+
+	// Format ID increment dengan 4 digit (0001, 0002, dst)
+	idString := fmt.Sprintf("%04d", idIncrement)
+
+	// Membuat kode ID Member
+	kodeMember := fmt.Sprintf("MEM%s%s", today, idString)
+
+	return kodeMember, nil
+}

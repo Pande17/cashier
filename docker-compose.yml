@@ -36,6 +36,7 @@ services:
             MYSQL_DATABASE: machine-cashier
             MYSQL_USER: user # User untuk koneksi ke database
             MYSQL_PASSWORD: password # Password untuk user 'user'
+            TZ: Asia/Singapore # Set timezone ke Asia/Singapore
         ports:
             - '3306:3306'
         volumes:

@@ -17,6 +17,7 @@ func InsertMember(db *gorm.DB, member model.Member) (model.Member, error) {
 
 // UpdateMember updates the details of an existing member
 func UpdateMember(db *gorm.DB, member model.Member) (model.Member, error) {
+	// Use the model.Member to update the record by matching the ID
 	err := db.Model(&model.Member{}).Where("id = ?", member.ID).Updates(member).Error
 	if err != nil {
 		return model.Member{}, err
