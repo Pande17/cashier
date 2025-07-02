@@ -1,6 +1,21 @@
 @import 'tailwindcss';
-@import 'tailwindcss/preflight';
-@import 'tailwindcss/utilities';
+/* @import 'tailwindcss/preflight';
+@import 'tailwindcss/utilities'; */
+@plugin 'daisyui';
 
 /* @import 'tailwindcss/components'; */
 /* @tailwind utilities; */
+@layer components {
+	/* Tambahkan style custom untuk sidebar */
+	.sidebar {
+		background-color: #2d3748; /*Dark gray background*/
+	}
+
+	.sidebar button {
+		background-color: #4a5568; /*Default button color */
+	}
+
+	.sidebar button:hover {
+		background-color: #2d3748; /*Darker shade on hover */
+	}
+}

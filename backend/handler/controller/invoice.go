@@ -158,7 +158,13 @@ func GetInvoices(c *fiber.Ctx) error {
 	// }
 
 	// Return the retrieved sales data with a success message
-	return OK(c, "Berhasil mengambil seluruh data invoice", dataInvoices)
+	// return OK(c, "Berhasil mengambil seluruh data invoice", dataInvoices)
+
+	// Return the retrieved sales data in a structured format
+	logrus.Info("Berhasil mengambil seluruh data invoice")
+	return c.JSON(fiber.Map{
+		"data": dataInvoices,
+	})
 }
 
 // GetInvoiceByID retrieves a specific 'invoice data' by its ID

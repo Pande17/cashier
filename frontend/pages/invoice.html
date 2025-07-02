@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Invoice List</title>
+		<link href="./../src/output.css" rel="stylesheet" />
+		<script src="./../js/invoice.js"></script>
+	</head>
+	<body class="bg-gray-100 font-sans">
+		<div class="container mx-auto p-6">
+			<h1 class="text-3xl font-bold text-gray-800 mb-6">Invoice List</h1>
+
+			<!-- Table for displaying invoices -->
+			<div class="overflow-x-auto">
+				<table class="min-w-full table-auto bg-white border-collapse border-2 border-gray-400 rounded-lg shadow-md">
+					<thead class="bg-blue-600 text-white">
+						<tr>
+							<th class="px-6 py-4 text-lg font-semibold border-b-2 border-gray-300">Kode Invoice</th>
+							<th class="px-6 py-4 text-lg font-semibold border-b-2 border-gray-300">Member ID</th>
+							<th class="px-6 py-4 text-lg font-semibold border-b-2 border-gray-300">Tanggal Beli</th>
+							<th class="px-6 py-4 text-lg font-semibold border-b-2 border-gray-300">Jatuh Tempo</th>
+							<th class="px-6 py-4 text-lg font-semibold border-b-2 border-gray-300">Status</th>
+							<th class="px-6 py-4 text-lg font-semibold border-b-2 border-gray-300">Total</th>
+							<th class="px-6 py-4 text-lg font-semibold border-b-2 border-gray-300">Aksi</th>
+						</tr>
+					</thead>
+					<tbody id="invoiceTableBody">
+						<!-- Data will be populated here dynamically -->
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</body>
+</html>

@@ -12,7 +12,7 @@ func RouteSetup(r *fiber.App) {
 	// r for 'route'
 
 	// Define a route group for organizing the routes
-	cashierGroup := r.Group("")
+	cashierGroup := r.Group("/api")
 
 	// Middleware to handle CORS for the cashier routes
 	// This middleware allows cross-origin requests to the cashier routes
