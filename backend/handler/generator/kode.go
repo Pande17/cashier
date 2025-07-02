@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/siruspen/logrus"
 	"gorm.io/gorm"
 )
 
@@ -70,26 +71,50 @@ func GenerateIDInvoiceItem(db *gorm.DB, kodeInvoice string) (string, error) {
 	return newID, nil
 }
 
-// Fungsi untuk menghasilkan kode ID Member
 func GenerateIDMember(db *gorm.DB) (string, error) {
-	// Mendapatkan tanggal hari ini dalam format YYYYMMDD
+	// Get today's date in YYYYMMDD format
 	today := time.Now().Format("20060102")
 
-	// Mencari jumlah member yang sudah ada untuk hari ini
-	var count int64
-	err := db.Model(&model.Member{}).Where("DATE(created_at) = ?", time.Now().Format("2006-01-02")).Count(&count).Error
-	if err != nil {
+	// Find the highest existing ID for today
+	var lastMember model.Member
+	err := db.Model(&model.Member{}).
+		Where("id LIKE ?", fmt.Sprintf("MEM%s%%", today)).
+		Order("id DESC").
+		First(&lastMember).Error
+	if err != nil && err.Error() != "record not found" {
 		return "", err
 	}
 
-	// Increment ID berdasarkan jumlah member yang ada + 1
-	idIncrement := count + 1
+	logrus.Printf("Last member ID found: %s\n", lastMember.ID)
 
-	// Format ID increment dengan 4 digit (0001, 0002, dst)
-	idString := fmt.Sprintf("%04d", idIncrement)
+	// Extract the numeric part of the last ID (skip MEM + today)
+	var lastIDNum int
+	if err == nil {
+		// Extract the last 4 digits from the last member ID
+		_, err := fmt.Sscanf(lastMember.ID[len("MEM"+today):], "%d", &lastIDNum)
+		if err != nil {
+			return "", err
+		}
+	}
 
-	// Membuat kode ID Member
-	kodeMember := fmt.Sprintf("MEM%s%s", today, idString)
+	// If no record was found, start from 1
+	if err != nil || lastIDNum == 0 {
+		lastIDNum = 1
+	} else {
+		// Increment the ID by 1
+		lastIDNum++
+	}
 
-	return kodeMember, nil
+	// Format the new ID with leading zeros (e.g., MEM202507010002)
+	newID := fmt.Sprintf("MEM%s%04d", today, lastIDNum)
+
+	// Check if the ID is already taken (including soft-deleted records)
+	var existingMember model.Member
+	err = db.First(&existingMember, "id = ?", newID).Error
+	if err == nil {
+		// If the member exists (including soft deleted), recursively generate a new ID
+		return GenerateIDMember(db)
+	}
+
+	return newID, nil
 }

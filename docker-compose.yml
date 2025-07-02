@@ -4,7 +4,7 @@ services:
     backend:
         build:
             context: ./backend
-            dockerfile: 'Dockerfile'
+            dockerfile: 'dev.Dockerfile'
         deploy:
             resources:
                 limits:
@@ -56,6 +56,34 @@ services:
             - '8080:80'
         depends_on:
             - mysql
+        networks:
+            - cashier-network
+
+    # frontend:
+    #     build:
+    #         context: ./frontend
+    #         dockerfile: 'Dockerfile'
+    #     ports:
+    #         - '80:80'
+    #     volumes:
+    #         - ./frontend:/usr/share/nginx/html # Mount seluruh direktori frontend ke dalam Nginx
+    #     depends_on:
+    #         - backend
+    #     networks:
+    #         - cashier-network
+
+    frontend:
+        build:
+            context: ./frontend
+            dockerfile: 'dev.Dockerfile'
+        environment:
+            VITE_BACKEND: 'http://localhost:3000'
+        ports:
+            - '5173:5173' # Port untuk akses frontend
+        volumes:
+            - ./frontend:/app # Mount direktori frontend ke dalam container
+        depends_on:
+            - backend
         networks:
             - cashier-network
 
