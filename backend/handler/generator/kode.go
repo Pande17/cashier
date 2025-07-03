@@ -10,6 +10,30 @@ import (
 	"gorm.io/gorm"
 )
 
+// Fungsi untuk menghasilkan kode barang
+func GenerateKodeBarang(db *gorm.DB) (string, error) {
+	// Mendapatkan tanggal hari ini dalam format YYYYMMDD
+	today := time.Now().Format("20060102")
+
+	// Mencari jumlah barang yang sudah ada untuk hari ini
+	var count int64
+	err := db.Model(&model.Barang{}).Where("DATE(created_at) = ?", time.Now().Format("2006-01-02")).Count(&count).Error
+	if err != nil {
+		return "", err
+	}
+
+	// Increment ID berdasarkan jumlah barang yang ada + 1
+	idIncrement := count + 1
+
+	// Format ID increment dengan 3 digit (001, 002, dst)
+	idString := fmt.Sprintf("%04d", idIncrement)
+
+	// Membuat kode barang
+	kodeBarang := fmt.Sprintf("BRG%s%s", today, idString)
+
+	return kodeBarang, nil
+}
+
 // Fungsi untuk menghasilkan kode invoice
 func GenerateKodeInvoice(db *gorm.DB) (string, error) {
 	// Mendapatkan tanggal hari ini dalam format YYYYMMDD

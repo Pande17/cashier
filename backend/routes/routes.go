@@ -23,12 +23,12 @@ func RouteSetup(r *fiber.App) {
 	}))
 
 	// Define routes for 'Barang'
-	cashierGroup.Get("/barang", controller.GetBarang) // Route to get all Barang data
-	// cashierGroup.Get("/barang/:id", controller.GetBarangByID)   // Route to get a specific Barang by ID
-	// cashierGroup.Post("/barang", controller.CreateBarang)       // Route to create a new Barang record
-	// cashierGroup.Put("/barang/:id", controller.UpdateBarang)    // Route to update an existing Barang by ID
+	cashierGroup.Get("/barang", controller.GetBarang)         // Route to get all Barang data
+	cashierGroup.Get("/barang/:id", controller.GetBarangByID) // Route to get a specific Barang by ID
+	cashierGroup.Post("/barang", controller.CreateBarang)     // Route to create a new Barang record
+	cashierGroup.Put("/barang/:id", controller.UpdateBarang)  // Route to update an existing Barang by ID
 	// cashierGroup.Put("/barang/stok/:id", controller.UpdateStok) // Route to update the stock of a Barang by ID
-	// cashierGroup.Delete("/barang/:id", controller.DeleteBarang) // Route to delete a Barang by ID
+	cashierGroup.Delete("/barang/:id", controller.DeleteBarang) // Route to delete a Barang by ID
 
 	// Define routes for 'invoice'
 	cashierGroup.Get("/invoice", controller.GetInvoices)                  // Route to get all Invoice data

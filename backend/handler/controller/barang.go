@@ -1,80 +1,78 @@
 package controller
 
 import (
+	"cashier-machine/handler/generator"
+	"cashier-machine/model"
+	repository "cashier-machine/repository/config"
 	"cashier-machine/utils"
 
 	"github.com/gofiber/fiber/v2" // Import Fiber for handling HTTP requests and responses
 	"github.com/sirupsen/logrus"  // Import logrus for logging
 )
 
-// // Function to create a new Barang (item)
-// func CreateBarang(c *fiber.Ctx) error {
-// 	// Define a request struct for adding new Barang
-// 	type AddBarangReq struct {
-// 		Kode       string  `json:"kode_barang"` // Barang code
-// 		Nama       string  `json:"nama_barang"` // Barang name
-// 		HargaPokok float64 `json:"harga_pokok"` // Cost price
-// 		HargaJual  float64 `json:"harga_jual"`  // Selling price
-// 		Tipe       string  `json:"tipe_barang"` // Barang type
-// 		Stok       uint    `json:"stok"`        // Stock quantity
-// 		CreateBy   string  `json:"created_by"`  // Creator's name
-// 		Histori    struct {
-// 			Amount     int    `json:"amount"`     // Stock change amount
-// 			Status     string `json:"status"`     // Stock change status
-// 			Keterangan string `json:"keterangan"` // Description of the stock change
-// 		} `json:"histori_stok"` // Stock history information
-// 	}
+// Function to create a new Barang (item)
+func CreateBarang(c *fiber.Ctx) error {
+	// Define a request struct for adding new Barang
+	// var req model.Barang
+	type AddBarangReq struct {
+		Nama      string  `json:"nama"`       // Name of the item
+		HargaBeli float64 `json:"harga_beli"` // Purchase price of the item
+		HargaJual float64 `json:"harga_jual"` // Selling price of the item
+		Kategori  string  `json:"kategori"`   // Category of the item
+		Stok      uint    `json:"stok"`       // Stock quantity of the item
+	}
 
-// 	// Parse the request body JSON into the AddBarangReq struct
-// 	req := new(AddBarangReq)
-// 	if err := c.BodyParser(req); err != nil {
-// 		// Handle JSON parsing errors
-// 		return c.Status(fiber.StatusBadRequest).
-// 			JSON(map[string]any{
-// 				"message": "Invalid Body", // Response message for invalid body
-// 			})
-// 	}
+	req := new(AddBarangReq)
 
-// 	// Create the new Barang (item) in the database
-// 	barang, errCreateBarang := utils.CreateBarang(model.Barang{
-// 		KodeBarang: req.Kode,
-// 		Nama:       req.Nama,
-// 		HargaPokok: req.HargaPokok,
-// 		HargaJual:  req.HargaJual,
-// 		TipeBarang: req.Tipe,
-// 		Stok:       req.Stok,
-// 		CreatedBy:  req.CreateBy,
-// 	})
+	// Parse the request body JSON into the Barang model
+	if err := c.BodyParser(req); err != nil {
+		// Handle JSON parsing errors
+		return BadRequest(c, "Invalid request body", "Failed to parse request body") // Response message for invalid body
+	}
 
-// 	// Create a history record for the new Barang (item)
-// 	utils.CreateHistoriBarang(&model.Details{
-// 		ID:         barang.ID,
-// 		KodeBarang: req.Kode,
-// 		Nama:       req.Nama,
-// 		HargaPokok: req.HargaPokok,
-// 		HargaJual:  req.HargaJual,
-// 		TipeBarang: req.Tipe,
-// 		Stok:       req.Stok,
-// 		// CreatedBy:  req.CreateBy,
-// 		Histori: []model.HistoriASKM{},
-// 	}, req.Histori.Keterangan, int(req.Stok), req.Histori.Status)
+	// Generate the barang code before saving the data
+	kodeBarang, err := generator.GenerateKodeBarang(repository.Mysql.DB)
+	if err != nil {
+		// Return an error response if generating the barang code fails
+		logrus.Printf("Error generating item code: %s\n", err.Error())
+		return Conflict(c, "Server Error", "Gagal membuat kode barang")
+	}
 
-// 	// Handle errors during creation and respond accordingly
-// 	if errCreateBarang != nil {
-// 		logrus.Printf("Error occurred: %s\n", errCreateBarang.Error())
-// 		return c.Status(fiber.StatusInternalServerError).
-// 			JSON(map[string]any{
-// 				"message": "Server Error", // Response message for server error
-// 			})
-// 	}
+	// Create the new Barang (item) in the database
+	barang, errCreateBarang := utils.CreateBarang(model.Barang{
+		KodeBarang: kodeBarang,
+		Nama:       req.Nama,
+		HargaBeli:  req.HargaBeli,
+		HargaJual:  req.HargaJual,
+		Kategori:   req.Kategori,
+		Stok:       req.Stok,
+		Model: model.Model{
+			CreatedBy: "admin", // Set the creator of the record
+		},
+	})
 
-// 	// Return the newly created Barang's ID and kode_barang
-// 	return c.Status(fiber.StatusOK).
-// 		JSON(map[string]any{
-// 			"id":          barang.ID,
-// 			"kode_barang": barang.KodeBarang,
-// 		})
-// }
+	// Create a history record for the new Barang (item)
+	// utils.CreateHistoriBarang(&model.Details{
+	// 	ID:         barang.ID,
+	// 	KodeBarang: req.Kode,
+	// 	Nama:       req.Nama,
+	// 	HargaPokok: req.HargaPokok,
+	// 	HargaJual:  req.HargaJual,
+	// 	TipeBarang: req.Tipe,
+	// 	Stok:       req.Stok,
+	// 	// CreatedBy:  req.CreateBy,
+	// 	Histori: []model.HistoriASKM{},
+	// }, req.Histori.Keterangan, int(req.Stok), req.Histori.Status)
+
+	// Handle errors during creation and respond accordingly
+	if errCreateBarang != nil {
+		logrus.Printf("Error occurred: %s\n", errCreateBarang.Error())
+		return Conflict(c, "Gagal membuat data Barang", errCreateBarang.Error()) // Response message for creation failure
+	}
+
+	// Return the newly created Barang's ID and kode_barang
+	return OK(c, "Berhasil membuat data Barang", barang)
+}
 
 // Function to retrieve all Barang (items) from the database
 func GetBarang(c *fiber.Ctx) error {
@@ -90,84 +88,54 @@ func GetBarang(c *fiber.Ctx) error {
 	return OK(c, "Berhasil mengambil data Barang", dataBarang)
 }
 
-// // Function to retrieve a specific Barang (item) by its ID
-// func GetBarangByID(c *fiber.Ctx) error {
-// 	// Find Barang's ID from Params
-// 	barangID, err := strconv.Atoi(c.Params("id"))
-// 	if err != nil {
-// 		// Handle invalid ID format
-// 		return c.Status(fiber.StatusBadRequest).JSON(
-// 			map[string]interface{}{
-// 				"message": "Invalid ID", // Response message for invalid ID
-// 			},
-// 		)
-// 	}
+// Function to retrieve a specific Barang (item) by its ID
+func GetBarangByID(c *fiber.Ctx) error {
+	// Find Barang's ID from Params
+	kodeBarang := c.Params("id")
+	// if err != nil {
+	// 	// Handle invalid ID format
+	// 	return BadRequest(c, "Invalid ID", "ID must be a valid") // Response message for invalid ID
+	// }
 
-// 	// Check if there is an item with that ID
-// 	dataBarang, err := utils.GetBarangByID(uint64(barangID))
-// 	if err != nil {
-// 		// Handle case where record is not found
-// 		if err.Error() == "record not found" {
-// 			return c.Status(fiber.StatusNotFound).JSON(
-// 				map[string]interface{}{
-// 					"message": "ID not found", // Response message for ID not found
-// 				},
-// 			)
-// 		}
+	// Check if there is an item with that ID
+	dataBarang, err := utils.GetBarangByID(kodeBarang)
+	if err != nil {
+		// Handle case where record is not found
+		if err.Error() == "record not found" {
+			return NotFound(c, "Data Barang tidak ditemukan", "Gagal mengambil data Barang") // Response message for not found
+		}
 
-// 		// Handle other errors
-// 		return c.Status(fiber.StatusInternalServerError).JSON(
-// 			map[string]interface{}{
-// 				"message": err.Error(), // Response message with error details
-// 			},
-// 		)
-// 	}
+		// Handle other errors
+		return Conflict(c, "Gagal mengambil data Barang", err.Error())
+	}
 
-// 	// Return the details of the Barang
-// 	return c.Status(fiber.StatusOK).JSON(
-// 		map[string]interface{}{
-// 			"data":    dataBarang,
-// 			"message": "Success", // Success message
-// 		},
-// 	)
-// }
+	// Return the details of the Barang
+	return OK(c, "Berhasil mengambil data Barang", dataBarang)
+}
 
-// // Function to update Barang (item) by ID
-// func UpdateBarang(c *fiber.Ctx) error {
-// 	// Find Barang's ID from Params
-// 	barangID, err := strconv.Atoi(c.Params("id"))
-// 	if err != nil {
-// 		// Handle invalid ID format
-// 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-// 			"message": "Invalid ID", // Response message for invalid ID
-// 		})
-// 	}
+// Function to update Barang (item) by ID
+func UpdateBarang(c *fiber.Ctx) error {
+	// Find Barang's ID from Params
+	kodeBarang := c.Params("id")
 
-// 	// Parse the request body JSON into the Barang model
-// 	var updatedBarang model.Barang
-// 	if err := c.BodyParser(&updatedBarang); err != nil {
-// 		// Handle JSON parsing errors
-// 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-// 			"message": "Invalid request body", // Response message for invalid body
-// 		})
-// 	}
+	// Define a request struct for updating Barang
+	var updatedBarang model.Barang
+	if err := c.BodyParser(&updatedBarang); err != nil {
+		return BadRequest(c, "Invalid request body", "Failed to parse request body")
+	}
 
-// 	// Update the Barang in the database
-// 	dataBarang, err := utils.UpdateBarang(uint(barangID), updatedBarang)
-// 	if err != nil {
-// 		// Handle errors during update
-// 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-// 			"message": "Failed to update item", // Response message for update failure
-// 		})
-// 	}
+	// Ensure kode_barang is not empty
+	updatedBarang.KodeBarang = kodeBarang
 
-// 	// Return the updated Barang's ID
-// 	return c.Status(fiber.StatusOK).JSON(
-// 		map[string]any{
-// 			// "id": dataBarang.ID,
-// 		},
-// 	)
-// }
+	// Update the Barang in the database
+	updatedData, err := utils.UpdateBarang(kodeBarang, updatedBarang)
+	if err != nil {
+		return Conflict(c, "Gagal memperbarui data Barang", err.Error())
+	}
+
+	// Return the updated Barang's ID
+	return OK(c, "Berhasil memperbarui data Barang", updatedData)
+}
 
 // // Function to update stock of Barang (item) by ID
 // func UpdateStok(c *fiber.Ctx) error {
@@ -246,34 +214,24 @@ func GetBarang(c *fiber.Ctx) error {
 // 	})
 // }
 
-// // Function to soft delete a Barang (item) by ID
-// func DeleteBarang(c *fiber.Ctx) error {
-// 	// Convert params to find ID
-// 	barangID, err := strconv.Atoi(c.Params("id"))
-// 	if err != nil {
-// 		// Handle invalid ID format
-// 		return c.Status(fiber.StatusBadRequest).JSON(
-// 			map[string]any{
-// 				"message": "Invalid ID", // Response message for invalid ID
-// 			},
-// 		)
-// 	}
+// Function to soft delete a Barang (item) by ID
+func DeleteBarang(c *fiber.Ctx) error {
+	// Convert params to find ID
+	kodeBarang := c.Params("id")
+	// if err != nil {
+	// 	// Handle invalid ID format
+	// 	return BadRequest(c, "Invalid ID", "ID must be a valid") // Response message for invalid ID
+	// }
 
-// 	// Attempt to delete the Barang
-// 	err = utils.DeleteBarang(uint64(barangID))
-// 	if err != nil {
-// 		// Handle cases where the record is not found or other errors
-// 		if err.Error() == "record not found" {
-// 			return c.Status(fiber.StatusNotFound).JSON(
-// 				map[string]any{
-// 					"message": "ID not found", // Response message for ID not found
-// 				},
-// 			)
-// 		}
-// 	}
+	// Attempt to delete the Barang
+	err := utils.DeleteBarang(kodeBarang)
+	if err != nil {
+		// Handle cases where the record is not found or other errors
+		if err.Error() == "record not found" {
+			return NotFound(c, "Data Barang tidak ditemukan", "Gagal menghapus data Barang") // Response message for not found
+		}
+	}
 
-// 	// Return confirmation of successful deletion
-// 	return c.Status(fiber.StatusOK).JSON(map[string]any{
-// 		"message": "Deleted Successfully", // Response message for successful deletion
-// 	})
-// }
+	// Return confirmation of successful deletion
+	return OK(c, "Berhasil menghapus data Barang", nil) // Response message for successful deletion
+}
