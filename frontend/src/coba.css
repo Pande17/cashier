@@ -1,4 +1,5 @@
 /*! tailwindcss v4.1.3 | MIT License | https://tailwindcss.com */
+@import 'daisyui';
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 @layer properties;
 @layer theme, base, components, utilities;
@@ -23,6 +24,14 @@
 		--color-gray-950: oklch(13% 0.028 261.692);
 		--color-black: #000;
 		--color-white: #fff;
+		/* new custom colors */
+		--color-primary: #3182ce; /* Primary accent color: VIBRANT BLUE */
+		--color-secondary: #2d3748; /* Sidebar background color: GUNMETAL */
+		--color-accent: #2b6cb0; /* Soft Blue for table headers */
+		--color-bg: #f7fafc; /* Primary background color: LIGHT GRAYISH BLUE */
+		--color-odd-row: #e2e8f0; /* Odd row background color: LIGHT GRAY */
+		--color-even-row: #f7fafc; /* Even row background color: LIGHT GRAYISH BLUE */
+		--color-text: #2d3748; /* Text color: DARK GRAY */
 		--spacing: 0.25rem;
 		--container-xs: 20rem;
 		--container-md: 28rem;
@@ -807,6 +816,18 @@
 		&:where(.dark, .dark *) {
 			color: var(--color-white);
 		}
+	}
+	.bg-main {
+		background-color: var(--color-bg);
+	}
+	.bg-secondary {
+		background-color: var(--color-secondary);
+	}
+	.color-text {
+		color: var(--color-text);
+	}
+	.color-accent {
+		color: var(--color-accent);
 	}
 }
 .notification-tab > .active {
