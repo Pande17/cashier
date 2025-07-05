@@ -59,19 +59,6 @@ services:
         networks:
             - cashier-network
 
-    # frontend:
-    #     build:
-    #         context: ./frontend
-    #         dockerfile: 'Dockerfile'
-    #     ports:
-    #         - '80:80'
-    #     volumes:
-    #         - ./frontend:/usr/share/nginx/html # Mount seluruh direktori frontend ke dalam Nginx
-    #     depends_on:
-    #         - backend
-    #     networks:
-    #         - cashier-network
-
     frontend:
         build:
             context: ./frontend
@@ -79,7 +66,7 @@ services:
         environment:
             VITE_BACKEND: 'http://localhost:3000'
         ports:
-            - '5173:5173' # Port untuk akses frontend
+            - '80:80' # Port untuk akses frontend
         volumes:
             - ./frontend:/app # Mount direktori frontend ke dalam container
         depends_on:

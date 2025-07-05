@@ -1,21 +1,109 @@
 @import 'tailwindcss';
+@plugin 'daisyui';
 /* @import 'tailwindcss/preflight';
 @import 'tailwindcss/utilities'; */
-@plugin 'daisyui';
-
 /* @import 'tailwindcss/components'; */
 /* @tailwind utilities; */
+
+/* Import url for google fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
+
+@layer theme {
+	/* Tambahkan style custom untuk tema */
+	:root {
+		--color-primary: #3182ce; /* Primary accent color: VIBRANT BLUE */
+		--color-secondary: #2d3748; /* Sidebar background color: GUNMETAL */
+		--color-accent: #2b6cb0; /* Soft Blue for table headers */
+		--color-bg: #f7fafc; /* Primary background color: LIGHT GRAYISH BLUE */
+		--color-odd-row: #e2e8f0; /* Odd row background color: LIGHT GRAY */
+		--color-even-row: #f7fafc; /* Even row background color: LIGHT GRAYISH BLUE */
+		--color-text: #2d3748; /* Text color: DARK GRAY */
+	}
+}
+
+/* Custom styles for color components */
+@layer components {
+	/* Kelas untuk latar belakang dengan primary color */
+	.bg-primary {
+		background-color: var(--color-primary);
+	}
+
+	/* Kelas untuk latar belakang dengan secondary color (sidebar) */
+	.bg-secondary {
+		background-color: var(--color-secondary);
+	}
+
+	/* Kelas untuk latar belakang dengan accent color */
+	.bg-accent {
+		background-color: var(--color-accent);
+	}
+
+	/* Kelas untuk latar belakang dengan primary background color */
+	.bg-primary-background {
+		background-color: var(--color-bg);
+	}
+
+	/* Kelas untuk latar belakang baris ganjil (odd row) */
+	.bg-odd-row {
+		background-color: var(--color-odd-row);
+	}
+
+	/* Kelas untuk latar belakang baris genap (even row) */
+	.bg-even-row {
+		background-color: var(--color-even-row);
+	}
+
+	/* Kelas untuk warna teks utama */
+	.text-primary {
+		color: var(--color-text);
+	}
+}
+
+/* Custom Table Styles for alternating row colors */
+@layer components {
+	body {
+		background-color: var(--color-bg); /* Set background color */
+		font-family: 'Poppins', sans-serif; /* Use Poppins font */
+	}
+	.table-row-even {
+		background-color: var(--color-even-row);
+	}
+
+	.table-row-odd {
+		background-color: var(--color-odd-row);
+	}
+	.btn-delete {
+		background-color: #e53e3e; /* Red color for delete button */
+		color: white; /* White text for better contrast */
+		border-radius: 0.375rem; /* Rounded corners */
+		padding: 0.5rem 1rem; /* Padding for the button */
+	}
+}
+/* Custom styles for the sidebar */
 @layer components {
 	/* Tambahkan style custom untuk sidebar */
 	.sidebar {
-		background-color: #2d3748; /*Dark gray background*/
+		background-color: var(--color-secondary); /* GUNMETAL */
+		color: var(--color-text); /* DARK GRAY */
 	}
 
-	.sidebar button {
-		background-color: #4a5568; /*Default button color */
+	.sidebar .logo {
+		color: var(--color-primary); /* VIBRANT BLUE */
 	}
 
-	.sidebar button:hover {
-		background-color: #2d3748; /*Darker shade on hover */
+	.sidebar .menu-item {
+		color: var(--color-text); /* DARK GRAY */
+	}
+
+	.sidebar .menu-item:hover {
+		background-color: var(--color-accent); /* SOFT BLUE */
+		color: white; /* White text on hover */
+	}
+	.sidebar .minimized {
+		width: 60px; /* Width when minimized */
+		overflow: hidden; /* Hide overflow */
+	}
+	.sidebar .minimized .text {
+		display: none; /* Hide content when minimized */
 	}
 }

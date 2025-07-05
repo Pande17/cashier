@@ -1,19 +1,32 @@
-# stage 1 - build stage
-FROM node:18-alpine
+# Stage 1 - Build stage
+FROM node:18-alpine AS build
 
-# set working directory
+# Set working directory
 WORKDIR /app
 
-# install dependencies
-COPY package.json ./
+# Install dependencies
+COPY package.json ./ 
+COPY package-lock.json ./   
+#It's a good practice to copy the lock file as well
 
 RUN npm install
 
-# copy all source code to build it
-COPY . ./
+# Copy all source code to build it
+COPY . ./ 
 
-# expose port
-EXPOSE 5173
+# Run Tailwind CSS in watch mode (for development)
+CMD ["npx", "tailwindcss", "-i", "./src/input.css", "-o", "./src/output.css", "--watch"]
 
-# start nginx
-CMD [ "npm", "run", "dev" ]
+# Stage 2 - Production stage (optional)
+FROM nginx:alpine AS production
+
+# Copy built files from build stage to nginx's serving folder
+COPY --from=build /app/src/output.css /usr/share/nginx/html/output.css
+# Adjust if necessary
+COPY --from=build /app ./usr/share/nginx/html  
+
+# Expose port
+EXPOSE 80
+
+# Start nginx to serve static files
+CMD ["nginx", "-g", "daemon off;"]

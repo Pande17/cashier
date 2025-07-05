@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Invoice List</title>
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+		<link href="../src/output.css" rel="stylesheet" />
+		<script src="../js/script.js" defer></script>
+	</head>
+	<body class="bg-primary font-sans min-h-screen">
+		<div class="container mx-auto p-6">
+			<!-- Sidebar -->
+			<div class="sidebar fixed top-0 bottom-0 lg:left-0 p-2 w-[250px] overflow-y-auto bg-gray-800 text-white transition-all duration-300">
+				<!-- Sidebar header -->
+				<div class="p-2.5 mt-1 flex items-center">
+					<!-- <span class="material-icons px-2 py-1 bg-blue-600 rounded-md"> point_of_sale </span> -->
+					<h1 class="text-xl font-bold ml-3 text-gray-200">Cashier Machine</h1>
+					<!-- Arrow to collapse -->
+					<span id="arrow" class="material-icons ml-5 cursor-pointer" onclick="toggleSidebar()"> keyboard_arrow_left </span>
+				</div>
+				<hr class="my-2 text-gray-600" />
+
+				<!-- Search bar -->
+				<div class="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer bg-gray-700">
+					<span class="material-icons text-sm">search</span>
+					<input type="search" placeholder="Search" class="text-sm ml-4 w-full bg-transparent focus:outline-none" />
+				</div>
+
+				<!-- Navigation links -->
+				<a href="../pages/dashboard.html" class="no-underline">
+					<div class="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 text-white">
+						<span class="material-icons text-sm">home</span>
+						<span class="text-xl ml-7 text-gray-200 font-bold">Home</span>
+					</div>
+				</a>
+				<a href="../pages/invoice.html" class="no-underline">
+					<div class="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 text-white">
+						<span class="material-icons text-sm">receipt_long</span>
+						<span class="text-xl ml-7 text-gray-200 font-bold">Invoice</span>
+					</div>
+				</a>
+				<a href="../pages/barang.html" class="no-underline">
+					<div class="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 text-white">
+						<span class="material-icons text-sm">widgets</span>
+						<span class="text-xl ml-7 text-gray-200 font-bold">Barang</span>
+					</div>
+				</a>
+				<a href="../pages/member.html" class="no-underline">
+					<div class="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 text-white">
+						<span class="material-icons text-sm">groups</span>
+						<span class="text-xl ml-7 text-gray-200 font-bold">Member</span>
+					</div>
+				</a>
+				<hr class="my-2 text-gray-600" />
+
+				<!-- Lainnya (Dropdown) -->
+				<div class="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 text-white" onclick="toggleDropdown()">
+					<span class="material-icons text-sm">settings</span>
+					<div class="flex justify-between items-center w-full">
+						<span class="text-xl ml-7 text-gray-200 font-bold">Lainnya</span>
+						<span class="material-icons text-sm mr-3">arrow_drop_down</span>
+					</div>
+				</div>
+
+				<div class="text-left text-[17px] font-bold mt-2 w-4/5 mx-auto text-gray-200 hidden" id="submenu">
+					<h1 class="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">Settings</h1>
+					<h1 class="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">Settings</h1>
+				</div>
+				<hr class="my-2 text-gray-600" />
+
+				<!-- Logout -->
+				<div class="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-red-800 text-white">
+					<span class="material-icons text-sm">logout</span>
+					<span class="text-xl ml-7 text-gray-200 font-bold">Logout</span>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
