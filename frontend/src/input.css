@@ -1,9 +1,4 @@
-@import 'tailwindcss';
-@plugin 'daisyui';
-/* @import 'tailwindcss/preflight';
-@import 'tailwindcss/utilities'; */
-/* @import 'tailwindcss/components'; */
-/* @tailwind utilities; */
+@import 'tailwindcss@v4.1.3';
 
 /* Import url for google fonts */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
