@@ -4,11 +4,14 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet" />
+		<!-- <link href="http://127.0.0.1:5500/frontend/src/tailwindcss@v4.1.3/tailwind.css" rel="stylesheet" /> -->
 		<link rel="stylesheet" href="../src/output.css" />
+		<link rel="stylesheet" href="../src/input.css" />
 		<script src="https://unpkg.com/@popperjs/core@2"></script>
 		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 		<script src="../js/script.js" defer></script>
-		<title>Invoice List</title>
+		<script src="../js/invoice.js" defer></script>
+		<title>Daftar Invoice</title>
 	</head>
 	<body class="text-white font-popins">
 		<!-- start: Sidebar -->
@@ -19,17 +22,17 @@
 				<hr class="my-2 text-gray-600" />
 			</a>
 			<ul class="mt-4">
-				<li class="mb-1 group active">
+				<li class="mb-1 group">
 					<a
 						href="dashboard.html"
-						class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
+						class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950"
 					>
 						<i class="ri-home-2-fill mr-3 text-lg"></i>
 						<span class="text-sm">Dashboard</span>
 					</a>
 				</li>
 
-				<li class="mb-1 group">
+				<li class="mb-1 group active">
 					<a
 						href="invoice.html"
 						class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
@@ -80,11 +83,11 @@
 				<button type="button" class="text-black sidebar-toggle">
 					<i class="ri-menu-line"></i>
 				</button>
-				<!-- <ul class="flex items-center text-sm ml-4">
+				<ul class="flex items-center text-sm ml-4">
 					<li class="mr-2">
-						<a href="#" class="color-text hover:bg-gray-400 font-medium">Dashboard</a>
+						<a href="#" class="color-text hover:bg-gray-400 font-medium">Daftar Invoice</a>
 					</li>
-				</ul> -->
+				</ul>
 				<ul class="ml-auto flex items-center">
 					<button id="toggleDarkMode" class="bg-gray-900 text-black font-semibold hover:text-green-500 transition duration-300"></button>
 					<li class="mr-1 dropdown">
@@ -137,6 +140,35 @@
 				</ul>
 			</div>
 			<!-- end: Navbar -->
+
+			<!-- start: Main Content -->
+			<div class="mx-15 mt-6 p-4 bg-white shadow-md rounded-lg mb-3 flex justify-between items-center">
+				<!-- Jumlah Invoice -->
+				<p class="text-lg font-semibold text-gray-800">Total Invoices: <span id="invoiceCount" class="font-bold">0</span></p>
+
+				<!-- Search Bar -->
+				<div class="relative w-auto sm:w-1/2 md:w-1/3 lg:w-1/4 ml-auto">
+					<i class="ri-search-line absolute top-1/2 ml-2 transform -translate-y-1/2 text-black"></i>
+					<input id="searchInput" type="text" class="w-full py-2 px-4 pl-7 border rounded-md text-sm text-black" placeholder="Search..." onkeyup="filterInvoices()" />
+				</div>
+			</div>
+
+			<!-- Invoices List dinamically -->
+			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-15" id="invoiceGrid">
+				<!-- Invoice items will be dynamically populated here from JavaScript -->
+			</div>
+			<!-- end: Main Content -->
+
+			<!-- Modal Peringatan Delete -->
+			<div id="deleteModal" class="fixed inset-0 flex justify-center items-center bg-black/50 hidden">
+				<div class="bg-white p-6 rounded-lg w-1/3">
+					<h2 class="text-lg font-semibold text-gray-800 mb-4">Are you sure you want to delete this invoice?</h2>
+					<div class="flex justify-end space-x-4">
+						<button id="cancelDelete" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Cancel</button>
+						<button id="confirmDelete" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
+					</div>
+				</div>
+			</div>
 		</main>
 		<!-- end: Main -->
 	</body>

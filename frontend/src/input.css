@@ -47,6 +47,9 @@
 	.bg-even-row {
 		background-color: var(--color-even-row);
 	}
+	.bg-delete {
+		background-color: #ff3b3f;
+	}
 
 	/* Kelas untuk warna teks utama */
 	.text-primary {
@@ -54,51 +57,56 @@
 	}
 }
 
-/* Custom Table Styles for alternating row colors */
+/* Custom styles for the invoice data */
 @layer components {
-	body {
-		background-color: var(--color-bg); /* Set background color */
-		font-family: 'Poppins', sans-serif; /* Use Poppins font */
-	}
-	.table-row-even {
-		background-color: var(--color-even-row);
+	/* Memastikan container di sekitar setiap invoice item menggunakan flex */
+	.invoice-item {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		margin-bottom: 1rem;
 	}
 
-	.table-row-odd {
-		background-color: var(--color-odd-row);
+	/* Membuat area harga dan tombol berada di bagian yang benar */
+	.invoice-header {
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+		align-items: center;
 	}
-	.btn-delete {
-		background-color: #e53e3e; /* Red color for delete button */
-		color: white; /* White text for better contrast */
-		border-radius: 0.375rem; /* Rounded corners */
-		padding: 0.5rem 1rem; /* Padding for the button */
+
+	.invoice-total {
+		font-size: 1.25rem;
+		font-weight: bold;
+		color: #e53e3e; /* Warna merah */
+	}
+
+	.invoice-actions {
+		display: flex;
+		gap: 1rem;
 	}
 }
-/* Custom styles for the sidebar */
+
 @layer components {
-	/* Tambahkan style custom untuk sidebar */
-	.sidebar {
-		background-color: var(--color-secondary); /* GUNMETAL */
-		color: var(--color-text); /* DARK GRAY */
+	/* Modal background */
+	#deleteModal {
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.5);
+		justify-content: center;
+		align-items: center;
 	}
 
-	.sidebar .logo {
-		color: var(--color-primary); /* VIBRANT BLUE */
-	}
-
-	.sidebar .menu-item {
-		color: var(--color-text); /* DARK GRAY */
-	}
-
-	.sidebar .menu-item:hover {
-		background-color: var(--color-accent); /* SOFT BLUE */
-		color: white; /* White text on hover */
-	}
-	.sidebar .minimized {
-		width: 60px; /* Width when minimized */
-		overflow: hidden; /* Hide overflow */
-	}
-	.sidebar .minimized .text {
-		display: none; /* Hide content when minimized */
+	/* Modal content */
+	#deleteModal div {
+		background-color: white;
+		padding: 20px;
+		border-radius: 10px;
+		width: 300px;
+		text-align: center;
 	}
 }
