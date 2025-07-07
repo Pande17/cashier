@@ -85,6 +85,45 @@
 		display: flex;
 		gap: 1rem;
 	}
+
+	/* Default: Search bar on the right */
+	.main-content {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-top: 1.5rem;
+		padding: 1rem;
+		background-color: #ffffff;
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		border-radius: 8px;
+	}
+
+	.search-container {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+	}
+
+	.search-container input {
+		padding-left: 30px; /* Space for icon */
+	}
+
+	/* Mobile and smaller screens: Move search bar below total data */
+	@media screen and (max-width: 540px) {
+		.main-content {
+			flex-direction: column; /* Stack elements vertically */
+			text-align: center;
+		}
+
+		.search-container {
+			margin-top: 1rem; /* Space between Total Data and Search */
+			justify-content: center;
+			width: 100%; /* Full width for search bar */
+		}
+		.search-container i {
+			right: 0;
+		}
+	}
 }
 
 @layer components {

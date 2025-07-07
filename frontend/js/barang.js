@@ -29,9 +29,9 @@ async function fetchBarang() {
             <p class="text-gray-600">Kategori: ${barang.kategori}</p>
             <p class="text-lg font-bold text-red-600">Rp. ${parseInt(barang.harga_jual).toLocaleString('id-ID')}</p>
             <div class="barang-actions mt-4">
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="viewBarang(${barang.kode_barang})">View</button>
-                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="updateBarang(${barang.kode_barang})">Update</button>
-                <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="deleteBarang(${barang.kode_barang})">Delete</button>
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="viewBarang(${barang.kode_barang})"><i class="ri-eye-line"></i></button>
+                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="updateBarang(${barang.kode_barang})"><i class="ri-pencil-line"></i></button>
+                <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="deleteBarang(${barang.kode_barang})"><i class="ri-delete-bin-line"></i></button>
             </div>
         `;
 		barangGrid.appendChild(barangItem);
@@ -63,9 +63,9 @@ function filterBarang() {
             <p class="text-gray-600">Kategori: ${barang.kategori}</p>
             <p class="text-lg font-bold text-red-600">Rp. ${parseInt(barang.harga_jual).toLocaleString('id-ID')}</p>
             <div class="barang-actions mt-4">
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="viewBarang(${barang.kode_barang})">View</button>
-                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="updateBarang(${barang.kode_barang})">Update</button>
-                <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="deleteBarang(${barang.kode_barang})">Delete</button>
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="viewBarang(${barang.kode_barang})"><i class="ri-eye-line"></i></button>
+                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="updateBarang(${barang.kode_barang})"><i class="ri-pencil-line"></i></button>
+                <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="deleteBarang(${barang.kode_barang})"><i class="ri-delete-bin-line"></i></button>
             </div>
         `;
 		barangGrid.appendChild(barangItem);

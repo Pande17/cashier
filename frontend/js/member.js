@@ -28,9 +28,9 @@ async function fetchMember() {
             <p class="text-gray-600">Perusahaan: ${member.perusahaan}</p>
             <p class="text-gray-600">Kategori: ${member.kategori}</p>
             <div class="member-actions mt-4">
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="viewMember(${member.id})">View</button>
-                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="updateMember(${member.id})">Update</button>
-                <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="deleteMember(${member.id})">Delete</button>
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="viewMember(${member.id})"><i class="ri-eye-line"></i></button>
+                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="updateMember(${member.id})"><i class="ri-pencil-line"></i></button>
+                <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="deleteMember(${member.id})"><i class="ri-delete-bin-line"></i></button>
             </div>
         `;
 		memberGrid.appendChild(memberItem);
@@ -66,9 +66,9 @@ function filterMember() {
             <p class="text-gray-600">Perusahaan: ${member.perusahaan}</p>
             <p class="text-gray-600">Kategori: ${member.kategori}</p>
             <div class="member-actions mt-4">
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="viewMember(${member.id})">View</button>
-                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="updateMember(${member.id})">Update</button>
-                <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="deleteMember(${member.id})">Delete</button>
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="viewMember(${member.id})"><i class="ri-eye-line"></i></button>
+                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="updateMember(${member.id})"><i class="ri-pencil-line"></i></button>
+                <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="deleteMember(${member.id})"><i class="ri-delete-bin-line"></i></button>
             </div>
         `;
 		memberGrid.appendChild(memberItem);

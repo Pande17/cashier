@@ -35,16 +35,18 @@ async function fetchInvoices() {
 		invoiceItem.classList.add('invoice-item', 'bg-white', 'rounded-lg', 'shadow-md', 'p-4', 'mb-4', 'hover:shadow-lg', 'transition-shadow', 'duration-300');
 		invoiceItem.innerHTML = `
             <h2 class="text-lg font-semibold mb-2">${invoice.member_id || 'Umum'}</h2>
-            <p class="text-gray-600">${formattedDate}</p>
-            <div class="invoice-header">
-                <p class="invoice-total">Rp. ${parseInt(invoice.total).toLocaleString('id-ID')}</p>
-                <div class="invoice-actions">
-                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="viewInvoice(${invoice.kode_invoice})">View</button>
-                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="updateInvoice(${invoice.kode_invoice})">Update</button>
-                    <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="deleteInvoice(${invoice.kode_invoice})">Delete</button>
-                </div>
-            </div>
             <p class="text-gray-500">${invoice.kode_invoice}</p>
+
+            <p class="text-gray-600">${formattedDate}</p>
+            
+                <p class="invoice-total">Rp. ${parseInt(invoice.total).toLocaleString('id-ID')}</p>
+				<br>
+                <div class="invoice-actions">
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="viewInvoice(${invoice.kode_invoice})"><i class="ri-eye-line"></i></button>
+                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="updateInvoice(${invoice.kode_invoice})"><i class="ri-pencil-line"></i></button>
+                    <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="deleteInvoice(${invoice.kode_invoice})"><i class="ri-delete-bin-line"></i></button>
+                </div>
+            
         `;
 		invoiceGrid.appendChild(invoiceItem);
 	});
@@ -80,9 +82,9 @@ function filterInvoices() {
             <div class="invoice-header">
                 <p class="invoice-total">Rp. ${parseInt(invoice.total).toLocaleString('id-ID')}</p>
                 <div class="invoice-actions">
-                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="viewInvoice(${invoice.kode_invoice})">View</button>
-                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="updateInvoice(${invoice.kode_invoice})">Update</button>
-                    <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="deleteInvoice(${invoice.kode_invoice})">Delete</button>
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="viewInvoice(${invoice.kode_invoice})"><i class="ri-eye-line"></i></button>
+                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="updateInvoice(${invoice.kode_invoice})"><i class="ri-pencil-line"></i></button>
+                    <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="deleteInvoice(${invoice.kode_invoice})"><i class="ri-delete-bin-line"></i></button>
                 </div>
             </div>
             <p class="text-gray-500">${invoice.kode_invoice}</p>
